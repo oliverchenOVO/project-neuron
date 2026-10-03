@@ -26,6 +26,12 @@ The eventual OUT selection must use final-normalized output and final logits;
 OUT is not a thirteenth transformer block. Attention layer 0 corresponds to L1.
 EMB has no attention operation. UI must explicitly distinguish these indices.
 
+GPT-2 uses byte-level BPE. For Unicode, an individual token can be a fragment of
+a multi-byte character and decode to a replacement glyph. The protocol preserves
+the exact BPE `piece`, token id, position and original character offsets alongside
+the individually decoded display text. Decode the complete id sequence when
+reconstructing original text; do not concatenate individually decoded fragments.
+
 ## Definitions
 
 For token position t and representation h[l,t]:
@@ -44,7 +50,9 @@ For token position t and representation h[l,t]:
   Axes are independent across layers. Motion between coordinates cannot by
   itself be interpreted as a geometric trajectory in a common embedding basis.
 - Final Prediction = softmax(final logits at last input position) over **all
-  50,257 vocabulary entries**, then top-k selection. Top-k bars need not sum to 1.
+  50,257 vocabulary entries**, then top-k selection. The model logits are float32;
+  softmax normalization uses float64 to reduce vocabulary-wide accumulation error.
+  Top-k bars need not sum to 1.
 - Logit Lens Estimate = softmax(W_U ln_f(h[l,last])) then top-k. This is a
   diagnostic projection, not an actual intermediate prediction process.
   Applying this to raw L12 matches the final model ranking within FP tolerance.

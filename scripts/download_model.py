@@ -4,7 +4,7 @@ import hashlib
 import json
 from pathlib import Path
 from huggingface_hub import snapshot_download
-from engine.model_loader import MODEL_ID, MODEL_REVISION
+from engine.config import MODEL_ID, MODEL_REVISION
 
 
 def main():

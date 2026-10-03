@@ -41,6 +41,7 @@ def main():
     evidence = {"model_metadata": result["metadata"], "platform": platform.platform(),
                 "python": platform.python_version(), "cpu_threads": torch.get_num_threads(),
                 "load_ms": loading_ms, "benchmarks": measurements,
+                "load_measurement": "fresh model object after Python imports; OS cache may be warm; not complete app startup",
                 "scope": "Phase 0 only. Electron, UI and installer gates not tested."}
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)

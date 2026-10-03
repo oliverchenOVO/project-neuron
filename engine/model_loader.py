@@ -1,11 +1,9 @@
 from pathlib import Path
+import json
 import torch
 from transformers import GPT2LMHeadModel, GPT2TokenizerFast
 from .errors import EngineError
-
-MODEL_ID = "openai-community/gpt2"
-# Immutable upstream snapshot, shared by tokenizer and model.
-MODEL_REVISION = "607a30d783dfa663caf39e06633721c8d4cfcd7e"
+from .config import MODEL_ID, MODEL_REVISION
 
 
 class ModelLoader:
@@ -21,6 +19,7 @@ class ModelLoader:
         self.error = None
         self.tokenizer = None
         self.model = None
+        self.revision = MODEL_REVISION if not self.model_dir else None
 
     def status(self):
         return {"stage": self.state, "model": MODEL_ID, "device": self.device,
@@ -33,6 +32,13 @@ class ModelLoader:
             if self.model_dir and not self.model_dir.is_dir():
                 raise EngineError("MODEL_NOT_FOUND", f"Local model folder missing: {self.model_dir}")
             source = str(self.model_dir) if self.model_dir else MODEL_ID
+            if self.model_dir:
+                provenance = self.model_dir / "neuron-provenance.json"
+                if provenance.is_file():
+                    manifest = json.loads(provenance.read_text(encoding="utf-8"))
+                    if manifest.get("model") != MODEL_ID or manifest.get("revision") != MODEL_REVISION:
+                        raise EngineError("UNSUPPORTED_MODEL_DATA", "Local provenance does not match the pinned GPT-2 snapshot.")
+                    self.revision = manifest["revision"]
             opts = {"local_files_only": self.offline}
             if not self.model_dir:
                 opts["revision"] = MODEL_REVISION

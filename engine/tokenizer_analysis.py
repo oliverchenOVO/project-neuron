@@ -1,6 +1,5 @@
 from .errors import EngineError
-
-MAX_TOKENS = 64
+from .config import MAX_TOKENS
 
 
 def tokenize(tokenizer, text):

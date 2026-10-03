@@ -13,7 +13,8 @@ MAX_LINE_BYTES = 128 * 1024
 
 
 def handle(engine, request):
-    if not isinstance(request, dict) or not isinstance(request.get("id"), (int, str)):
+    if (not isinstance(request, dict) or not isinstance(request.get("id"), (int, str))
+            or isinstance(request.get("id"), bool)):
         raise EngineError("INVALID_REQUEST", "Expected an object with an integer/string id.")
     method = request.get("method")
     params = request.get("params", {})

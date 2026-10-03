@@ -2,7 +2,9 @@ import torch
 
 
 def top_predictions(logits, tokenizer, k=10):
-    probabilities = torch.softmax(logits.float(), dim=-1)
+    # Preserve genuine model logits; use float64 for the 50,257-way
+    # normalization to avoid float32 denominator accumulation error.
+    probabilities = torch.softmax(logits.double(), dim=-1)
     values, indices = torch.topk(probabilities, k=k)
     return [{"token_id": int(i), "token": tokenizer.decode([int(i)],
              clean_up_tokenization_spaces=False), "probability": float(p),

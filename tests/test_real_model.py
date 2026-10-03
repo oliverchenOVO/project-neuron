@@ -19,6 +19,15 @@ def test_tokenization_deterministic(real_engine, signals):
     assert [t["piece"] for t in tokens] == ["The", "Ġcat", "Ġsat", "Ġon", "Ġthe", "Ġmat"]
 
 
+def test_unicode_tokenization_roundtrip(real_engine):
+    tokenizer = real_engine.loader.tokenizer
+    text = "你好，Transformer 🔬"
+    ids, tokens = tokenize(tokenizer, text)
+    assert tokenizer.decode(ids[0], clean_up_tokenization_spaces=False) == text
+    assert [t["id"] for t in tokens] == ids[0].tolist()
+    assert all(isinstance(t["piece"], str) for t in tokens)
+
+
 def test_hidden_states_shapes(signals):
     assert len(signals.hf_hidden_states) == 13
     assert all(h.shape == (1, 6, 768) for h in signals.hf_hidden_states)
@@ -52,7 +61,7 @@ def test_causal_future_mask(signals):
 def test_final_logits_and_softmax(signals, real_engine, analysis):
     assert signals.logits.shape == (1, 6, 50257)
     assert torch.isfinite(signals.logits).all()
-    probabilities = torch.softmax(signals.logits[0, -1].float(), dim=-1)
+    probabilities = torch.softmax(signals.logits[0, -1].double(), dim=-1)
     assert probabilities.sum().item() == pytest.approx(1, abs=1e-6)
     expected = top_predictions(signals.logits[0, -1], real_engine.loader.tokenizer)
     assert analysis["final_top_k"] == expected
@@ -91,7 +100,9 @@ def test_logit_lens_finite_and_final_matches(real_engine, signals, analysis):
     assert len(analysis["logit_lens_top_k"]) == 13
     for lens, final in zip(analysis["logit_lens_top_k"][-1], analysis["final_top_k"]):
         assert lens["token_id"] == final["token_id"]
-        assert lens["probability"] == pytest.approx(final["probability"], abs=1e-6)
+        # A last-position GEMV and the model's batched GEMM can differ slightly
+        # in FP32 accumulation. Logit equality is also checked above.
+        assert lens["probability"] == pytest.approx(final["probability"], abs=1e-5)
 
 
 def test_magnitude_and_delta_formulas(signals, analysis):

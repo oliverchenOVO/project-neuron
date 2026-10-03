@@ -8,7 +8,7 @@ from . import ANALYSIS_VERSION
 from .attention_analysis import serialize_attention, validate_attention
 from .errors import EngineError
 from .hidden_state_analysis import magnitudes, changes
-from .model_loader import ModelLoader, MODEL_ID, MODEL_REVISION
+from .model_loader import ModelLoader, MODEL_ID
 from .prediction import logit_lens, top_predictions
 from .projection import pca_2d
 from .similarity import cosine_matrix
@@ -59,6 +59,12 @@ class AnalysisEngine:
         validate_attention(outputs.attentions, c.n_layer, c.n_head, len(tokens))
         if len(block_outputs) != c.n_layer or outputs.hidden_states is None:
             raise EngineError("UNSUPPORTED_MODEL_DATA", "Missing hidden states.")
+        expected_hidden = (1, len(tokens), c.n_embd)
+        if (len(outputs.hidden_states) != c.n_layer + 1
+                or any(tuple(h.shape) != expected_hidden for h in outputs.hidden_states)
+                or any(tuple(h.shape) != expected_hidden for h in block_outputs)
+                or tuple(outputs.logits.shape) != (1, len(tokens), c.vocab_size)):
+            raise EngineError("UNSUPPORTED_MODEL_DATA", "Unexpected hidden-state or logit tensor shape.")
         representations = (outputs.hidden_states[0][0],) + tuple(h[0] for h in block_outputs)
         for h in (*representations, outputs.logits):
             if not torch.isfinite(h).all():
@@ -73,7 +79,7 @@ class AnalysisEngine:
         if not isinstance(text, str):
             raise EngineError("INVALID_INPUT", "text must be a string.")
         self.loader.load()
-        key = (MODEL_ID, MODEL_REVISION, str(self.loader.model_dir),
+        key = (MODEL_ID, self.loader.revision, str(self.loader.model_dir),
                self.loader.device, text, ANALYSIS_VERSION, top_k)
         started = time.perf_counter()
         if key in self.cache:
@@ -88,7 +94,8 @@ class AnalysisEngine:
         states = signals.representations
         pca = [pca_2d(h) for h in states]
         result = {
-            "metadata": {"model": MODEL_ID, "model_revision": MODEL_REVISION,
+            "metadata": {"model": MODEL_ID, "model_revision": self.loader.revision,
+                "model_source": str(self.loader.model_dir) if self.loader.model_dir else "huggingface_cache",
                 "analysis_version": ANALYSIS_VERSION, "device": self.loader.device,
                 "parameter_count": sum(p.numel() for p in model.parameters()),
                 "attention_implementation": model.config._attn_implementation,
