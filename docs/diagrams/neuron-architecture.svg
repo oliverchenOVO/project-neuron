@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="700" viewBox="0 0 1280 700" role="img" aria-labelledby="title desc">
+  <title id="title">Project NEURON：從真實模型張量到互動式科學視覺化</title>
+  <desc id="desc">本機 GPT-2 經 Python 引擎擷取訊號並計算 cosine、L2、共享 PCA，輸出帶有 provenance 的公開 JSON。React 瀏覽器驗證資料後顯示 Attention、Similarity、Space 和 Compare。CLI 與 JSON-line RPC 為另一個既有入口，尚未接入瀏覽器。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#74ddd9"/></marker>
+    <style>
+      text{font-family:"Microsoft JhengHei","Noto Sans TC",Arial,sans-serif;fill:#d9e6ee}
+      .heading{font-size:28px;font-weight:700}.sub{font-size:16px;fill:#97aebb}
+      .tag{font-size:12px;letter-spacing:1.6px;fill:#74ddd9}.name{font-size:22px;font-weight:700}
+      .body{font-size:16px;fill:#b4c6d2}.small{font-size:14px;fill:#8fa6b6}
+      .box{fill:#101e29;stroke:#304957;stroke-width:1.5}.line{fill:none;stroke:#74ddd9;stroke-width:2;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect width="1280" height="700" rx="20" fill="#0a121a"/>
+  <text x="52" y="65" class="heading">從真實張量到可追溯的視覺觀察</text>
+  <text x="52" y="99" class="sub">本機推論 → Python 分析 → 公開資料契約 → 互動式顯微鏡</text>
+  <text x="52" y="149" class="tag">01 · OFFLINE ANALYSIS</text>
+  <g>
+    <rect x="52" y="176" width="260" height="166" rx="12" class="box"/>
+    <text x="74" y="212" class="tag">MODEL</text>
+    <text x="74" y="246" class="name">本機 GPT-2</text>
+    <text x="74" y="278" class="body">固定 checkpoint · 真實 forward</text>
+    <text x="74" y="307" class="small">12 blocks · 12 heads · hidden 768</text>
+  </g>
+  <path d="M 316 259 H 352" class="line"/>
+  <g>
+    <rect x="360" y="176" width="260" height="166" rx="12" class="box"/>
+    <text x="382" y="212" class="tag">SIGNALS</text>
+    <text x="382" y="246" class="name">Python 擷取訊號</text>
+    <text x="382" y="278" class="body">EMB + raw residual L01–L12</text>
+    <text x="382" y="307" class="small">Attention · hidden states · logits</text>
+  </g>
+  <path d="M 624 259 H 660" class="line"/>
+  <g>
+    <rect x="668" y="176" width="260" height="166" rx="12" class="box"/>
+    <text x="690" y="212" class="tag">DERIVED METRICS</text>
+    <text x="690" y="246" class="name">高維表徵分析</text>
+    <text x="690" y="278" class="body">Cosine · L2 · shared PCA</text>
+    <text x="690" y="307" class="small">同一 basis ／ mean 轉換所有層</text>
+  </g>
+  <path d="M 932 259 H 968" class="line"/>
+  <g>
+    <rect x="976" y="176" width="252" height="166" rx="12" class="box"/>
+    <text x="998" y="212" class="tag">PUBLIC DATA</text>
+    <text x="998" y="246" class="name">JSON · schema 0.2.0</text>
+    <text x="998" y="278" class="body">固定公開句子 · 可重現</text>
+    <text x="998" y="307" class="small">Revision · SHA-256 · shape</text>
+  </g>
+  <path d="M 1102 348 V 411" class="line"/>
+  <text x="52" y="391" class="tag">02 · BROWSER MICROSCOPE</text>
+  <text x="998" y="378" class="small">載入與嚴格驗證</text>
+  <rect x="52" y="425" width="1176" height="146" rx="12" class="box"/>
+  <text x="74" y="459" class="body">React + Zustand + Canvas / SVG</text>
+  <text x="778" y="459" class="small">token ／ layer 選擇共用；heads 只影響 attention</text>
+  <g>
+    <rect x="74" y="483" width="263" height="62" rx="7" fill="#14333b"/>
+    <text x="90" y="507" class="tag">ATTENTION</text><text x="90" y="530" class="body">真實權重矩陣與連結</text>
+    <rect x="362" y="483" width="263" height="62" rx="7" fill="#14333b"/>
+    <text x="378" y="507" class="tag">SIMILARITY</text><text x="378" y="530" class="body">Signed cosine 與關係排名</text>
+    <rect x="650" y="483" width="263" height="62" rx="7" fill="#2e2a22"/>
+    <text x="666" y="507" class="tag">SPACE / TRAIL</text><text x="666" y="530" class="body">共同投影與跨層變化</text>
+    <rect x="938" y="483" width="268" height="62" rx="7" fill="#26273d"/>
+    <text x="954" y="507" class="tag">COMPARE</text><text x="954" y="530" class="body">768D 指標與兩層比較</text>
+  </g>
+  <path d="M 52 594 H 1228" stroke="#263b48"/>
+  <text x="52" y="626" class="body">另一入口：CLI ／ JSON-line RPC → 同一 Python 引擎</text>
+  <text x="52" y="653" class="small">現有 worker scaffold 尚未接入瀏覽器；桌面整合另屬後續階段。</text>
+  <text x="722" y="626" class="body">原始高維張量留在 Python</text>
+  <text x="722" y="653" class="small">前端接收衍生指標；PCA 軌跡不是因果推理路徑。</text>
+</svg>

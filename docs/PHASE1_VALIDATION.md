@@ -39,7 +39,9 @@ connections. Fully packaged desktop offline operation is not verified.
 ## GITHUB
 
 [oliverchenOVO/project-neuron](https://github.com/oliverchenOVO/project-neuron)
-is PRIVATE, verified using GitHub CLI. Stable milestones are committed to Git.
+was originally PRIVATE. On 2026-10-04 the owner requested publishing this same
+repository; it is now PUBLIC, with the original repository identity, commit
+history and Actions records retained. Stable milestones are committed to Git.
 Model weights, environment and prompt-derived artifacts are excluded.
 
 ## Acceptance gates
@@ -70,7 +72,7 @@ work exists but the complete Phase 1 requirement remains unverified.
 | S | Visual regression | PARTIAL — browser fixed screenshots pass; desktop absent |
 | T | Windows installer | NOT IMPLEMENTED |
 | U | Windows portable executable | NOT IMPLEMENTED |
-| V | Private GitHub repository | PASS — visibility PRIVATE verified |
+| V | Existing GitHub repository and history | PASS — published in place at owner request; original history retained |
 
 ## KNOWN LIMITATIONS
 
