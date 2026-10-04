@@ -1,0 +1,32 @@
+[
+  {
+    "name": "showcase",
+    "bytes": 99380,
+    "sha256": "80dbc75f8214a5a5f5240da60c282e06cb02bca3065c4f8f8854959f20eaea18",
+    "tokens": 6,
+    "generation_and_verification_ms": 1192.5539000076242,
+    "uncached_reproducibility_verified": true,
+    "engine_timings": {
+      "forward_ms": 497.90200000279583,
+      "analysis_ms": 577.9523999954108,
+      "cache_hit": false,
+      "model_load_ms": 923.2576999929734,
+      "note": "forward_ms includes tokenizer and tensor checks; analysis_ms includes forward and derived metrics, excludes model loading and JSON serialization"
+    }
+  },
+  {
+    "name": "stress-64",
+    "bytes": 8623721,
+    "sha256": "40be8e8623e816a6781f5a6dde077d4ded0fb5fab5c769c3cf4cf734881423b4",
+    "tokens": 64,
+    "generation_and_verification_ms": 1796.4655999967363,
+    "uncached_reproducibility_verified": true,
+    "engine_timings": {
+      "forward_ms": 139.36169998487458,
+      "analysis_ms": 270.3330999938771,
+      "cache_hit": false,
+      "model_load_ms": 923.2576999929734,
+      "note": "forward_ms includes tokenizer and tensor checks; analysis_ms includes forward and derived metrics, excludes model loading and JSON serialization"
+    }
+  }
+]

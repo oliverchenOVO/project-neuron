@@ -10,3 +10,6 @@ build/
 dist/
 node_modules/
 *.egg-info/
+frontend/test-results/
+frontend/playwright-report/
+*.tsbuildinfo

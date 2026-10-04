@@ -3,12 +3,67 @@
 Make the invisible internal signals of a Transformer visible.
 
 An instrument for observing **real local GPT-2 forward passes**, not a chatbot.
-Current milestone: Phase 0, Python analysis spike. Phase 1 is incomplete.
+Current milestone: Phase 0.5, real-data browser microscope. Phase 1 is incomplete.
 No simulated model data or fabricated progress is used.
 
 **Phase 0 passed:** 36 local tests, real CPU/offline GPT-2 forward pass and worker
 roundtrip verified. See [validation evidence](docs/PHASE0_VALIDATION.md) and the
 [Phase 1 acceptance ledger](docs/PHASE1_VALIDATION.md) for exact scope and limits.
+
+## Browser microscope
+
+React + TypeScript + Vite + Zustand. The browser displays **SHOWCASE FIXTURE /
+REAL FORWARD PASS**: previously computed local GPT-2 signals, with strict schema
+validation. **GENERATED FROM REAL GPT-2 OUTPUT — NOT MOCK DATA.** It does not run
+inference in the browser. No backend inference HTTP service is involved.
+
+```powershell
+cd frontend
+npm ci
+npm run build
+npm run preview
+```
+
+Open `http://127.0.0.1:4173`. Select **sat** to open arcs, change Layers 01 → 06 →
+12 and AVG / H01–H12, then inspect raw residual magnitude, change and targets.
+HEATMAP retains all query/key cells, including future zeros. Arrow keys on the
+matrix inspect exact values; Enter selects its query. Up/down elsewhere changes
+layer. Use the fixture menu for the 64-token stress scene.
+
+Matrix Hero: 1920×1080, public prompt `The cat sat on the mat`, Layer 01 / AVG,
+no selected query. This is an actual Playwright browser screenshot.
+
+![Matrix Hero](docs/screenshots/matrix-hero.png)
+
+Arc Hero: same fixture, Layer 01 / AVG, selected query position 2 (` sat`, ID
+3332). Every edge comes from the genuine attention row; the loop is self-attention.
+
+![Arc Hero](docs/screenshots/arc-hero.png)
+
+Reproduce public fixtures with the existing local checkpoint:
+
+```powershell
+.\.venv\Scripts\python.exe -B -m scripts.generate_showcase_fixture --verify-reproducibility
+# Equivalent from frontend/: npm run fixtures
+cd frontend
+npm test
+npx playwright install chromium
+npm run test:e2e
+# Start npm run preview in another terminal, then:
+npm run benchmark
+```
+
+Fixed public prompts only: the six-token smoke sentence and ` hello` repeated
+64 times. Revision/schema/generator version and SHA-256 are recorded in
+`frontend/public/fixtures/manifest.json`. No model-derived numbers are rounded or
+edited. Compact JSON separators omit whitespace; only machine/timing metadata
+is omitted. Private prompt-derived `artifacts/` remain ignored.
+
+See [Phase 0.5 validation](docs/PHASE0_5_VALIDATION.md) for gates, screenshots,
+production browser timings, methodology and remaining limits. Baseline updates
+are deliberate: `npm run test:visual:update`; normal verification never updates
+snapshots. Windows screenshot baselines are tied to the recorded Chromium/font
+environment.
 
 ## Run on Windows (PowerShell)
 
@@ -59,8 +114,9 @@ checked separately from local test results.
 
 ## Architecture
 
-Implemented: CLI / JSON-line worker → Python analysis engine → resident GPT-2.
-Planned: React + TypeScript + Vite + Zustand renderer → Electron preload →
+Implemented: CLI / JSON-line worker → Python analysis engine → resident GPT-2;
+public fixture generator → browser data-source abstraction → React renderer.
+Planned live integration: renderer → Electron preload →
 Electron main process → frozen Python worker. Phase 1 uses no inference HTTP
 server, and renderer code must never execute shell commands.
 
@@ -109,11 +165,11 @@ axes at each layer; interpolated motion is not proof of a shared-space trajector
 
 ## Windows builds and screenshots
 
-**Not available at Phase 0.** Phase 1D will freeze `neuron-engine.exe` using
+**Windows executables are not available at Phase 0.5.** Phase 1D will freeze `neuron-engine.exe` using
 PyInstaller, bundle local weights, then use electron-builder for Windows x64
 NSIS and portable builds. End users must not need Python, Node or model libraries.
 Installers cannot be claimed complete until packaged offline/crash-recovery QA
-passes. UI screenshots and Playwright visual regressions begin after Phase 0.
+passes. Browser screenshots and Playwright visual regressions are now available.
 
 ## Privacy
 

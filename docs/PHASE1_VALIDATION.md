@@ -5,6 +5,11 @@ desktop application is not yet implemented, packaged or accepted.
 
 ## IMPLEMENTED
 
+Phase 0.5 adds a validated React browser microscope, public real-data fixtures,
+attention Canvas/SVG views, token/layer/head controls, inspector, final prediction,
+frontend tests, Playwright screenshots and production performance evidence.
+It does not complete the desktop application. See PHASE0_5_VALIDATION.md.
+
 Python engine modules, real GPT-2 spike, CLI analysis JSON, derived metrics,
 last-position Logit Lens, bounded input/cache, JSON-line RPC scaffold, pinned
 local checkpoint acquisition, unit/worker tests and Windows CI workflow.
@@ -46,35 +51,36 @@ work exists but the complete Phase 1 requirement remains unverified.
 | B | Real hidden states | PASS — 13 actual tensor entries |
 | C | Real attentions | PASS — 12 layers × 12 heads |
 | D | Real logits | PASS — final `[1,6,50257]`, finite outputs |
-| E | Attention heatmap | NOT IMPLEMENTED |
-| F | Attention arc view | NOT IMPLEMENTED |
-| G | Layer/head explorer | NOT IMPLEMENTED |
+| E | Attention heatmap | PARTIAL — browser real fixture view passes; live desktop absent |
+| F | Attention arc view | PARTIAL — browser selected-query view passes; live desktop absent |
+| G | Layer/head explorer | PARTIAL — browser controls pass; live desktop absent |
 | H | Hidden-state similarity view | PARTIAL — real cosine matrices; UI absent |
 | I | PCA representation view | PARTIAL — real PCA coordinates; UI absent |
-| J | Final top-k prediction view | PARTIAL — real rankings; UI absent |
+| J | Final top-k prediction view | PARTIAL — browser genuine probability view passes; live desktop absent |
 | K | Logit Lens view | PARTIAL — diagnostics validated; UI absent |
 | L | Layer Journey | NOT IMPLEMENTED |
 | M | Cinematic Mode | NOT IMPLEMENTED |
 | N | CPU mode | PARTIAL — Python CPU validated; desktop absent |
 | O | Offline mode | PARTIAL — local engine validated; packaged app absent |
 | P | Worker crash recovery | NOT IMPLEMENTED |
-| Q | Unit tests | PARTIAL — Python tests pass; frontend tests absent |
+| Q | Unit tests | PARTIAL — Python and frontend tests pass; desktop tests absent |
 | R | Integration tests | PARTIAL — real worker RPC passes; Electron absent |
-| S | Visual regression | NOT IMPLEMENTED |
+| S | Visual regression | PARTIAL — browser fixed screenshots pass; desktop absent |
 | T | Windows installer | NOT IMPLEMENTED |
 | U | Windows portable executable | NOT IMPLEMENTED |
 | V | Private GitHub repository | PASS — visibility PRIVATE verified |
 
 ## KNOWN LIMITATIONS
 
-UI/showcase features, live startup reporting, Electron supervisor and Windows
-distribution are not built. Maximum-length JSON needs transport profiling.
+Live startup reporting, Electron supervisor and Windows distribution are not
+built. Maximum-length browser JSON has been profiled; worker transport remains
+unmeasured.
 Current lens data is for the final input position. Independently fitted PCA
-axes need clear labeling throughout any layer animation. No screenshots exist
-because the formal UI has not started.
+axes need clear labeling throughout any layer animation. Browser screenshots
+are recorded in docs/screenshots; they show precomputed real fixtures.
 
 ## NEXT PHASE OPTIONS
 
-Proceed to **Phase 0.5 browser visualization**, then 1A core, 1B Journey/polish,
+After **Phase 0.5 browser visualization**, proceed to 1A core, 1B Journey/polish,
 1C Electron worker, and 1D packaging/QA. Phase 2 features stay out of scope until
 every Phase 1 acceptance gate passes.

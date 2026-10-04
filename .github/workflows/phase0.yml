@@ -26,6 +26,7 @@ jobs:
       - run: python -m engine.cli --model-dir resources/models/gpt2 --offline
       - run: python -m pytest -q --junitxml=artifacts/pytest.xml
       - run: python -m scripts.validate_phase0
+      - run: python -m scripts.generate_showcase_fixture --verify-reproducibility --output artifacts/ci-public-fixtures
       - uses: actions/upload-artifact@v4
         if: always()
         with:
