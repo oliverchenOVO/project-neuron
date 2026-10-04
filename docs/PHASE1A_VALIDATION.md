@@ -128,6 +128,9 @@ every token even when projections overlap.
 
 ## REPRESENTATION TRAIL
 
+Hover readouts float above the footer without resizing the SVG; browser checks
+verify that trail inspection retains the exact viewport/axis geometry.
+
 13 exact shared positions ordered EMB → L01 → … → L12. Trail and Info explicitly
 state that projected changes are NOT a causal reasoning path. Hover exposes
 layer, PC1/PC2, magnitude and preceding change; EMB is N/A. Old independent
@@ -150,7 +153,7 @@ Playwright 6 and production build. Final local results:
 |---|---|---|
 | Python | 50 PASS, zero skip/failure, 13.48s | genuine model/RPC + shared basis and cross-layer metrics |
 | Frontend | 57 PASS | original 29 + 28 core; strict schemas, negative scale, selection identity and values |
-| Playwright | 11 PASS, 20.4s | original 6 + 5 core; normal run WITHOUT snapshot updates |
+| Playwright | 11 PASS, 17.1s | original 6 + 5 core; normal run WITHOUT snapshot updates |
 | Production | PASS | strict TypeScript, Vite 44 modules; JS 279.05kB / gzip 86.76kB |
 
 New coverage includes genuine shared transforms/domains, finite variance,
@@ -271,7 +274,8 @@ All five required kinds satisfy p95 <50ms for both fixtures; zero page errors.
 handler → first rAF is excluded because its timestamp can precede the handler.
 Interpolation clamps to [0,1] to avoid first-frame extrapolation. Callback work
 measures interpolation/setState scheduling, excluding subsequent React render
-and paint; it is not total-frame CPU time. Endpoints/reduced motion are E2E tested.
+and paint; it is not total-frame CPU time. Values displayed as 0.00ms reflect
+browser timer quantization, not zero CPU cost. Endpoints/reduced motion are E2E tested.
 
 | Fixture | Frames | Interval median | Interval p95 | Callback median | Callback p95 |
 |---|---:|---:|---:|---:|---:|
@@ -291,7 +295,8 @@ fixed public repeated-hello scene, not proof for every prompt or computer.
 Existing PRIVATE `oliverchenOVO/project-neuron`, main. All Phase 0/0.5 commits
 retained, no reinitialization/squash. `07a8fc4`: shared analysis; `40f84dc`:
 four-mode microscope. Final validation commit adds evidence/report/README and
-corrects first-rAF interval measurement. Private visibility checked by gh CLI.
+corrects first-rAF interval measurement. A final correction keeps trail hover
+readouts from resizing the axis viewport. Private visibility checked by gh CLI.
 Final clean/synchronized state is checked after push.
 
 ## REMOTE CI

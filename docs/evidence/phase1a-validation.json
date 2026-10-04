@@ -13,7 +13,7 @@
   "playwright": {
     "tests": 11,
     "failures": 0,
-    "seconds": 20.4,
+    "seconds": 17.1,
     "updates": false
   },
   "production_build": true,
@@ -113,5 +113,6 @@
       "run_id": 37188088430,
       "conclusion": "success"
     }
-  }
+  },
+  "trail_hover_preserves_axis_viewport": true
 }

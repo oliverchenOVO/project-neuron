@@ -72,6 +72,11 @@ test("similarity, graph, fixed axes, trail and compare heroes", async ({
   ).toEqual(Array.from({ length: 13 }, (_, i) => i));
   await expect(page).toHaveScreenshot("representation-trail.png");
   await page.screenshot({ path: "../docs/screenshots/phase1a-trail-hero.png" });
+  const plotViewport = await page.getByTestId("space-plot").getAttribute("viewBox");
+  await page.getByTestId("trail-point").last().hover();
+  await expect(page.locator(".trail-disclaimer span")).toContainText("L12");
+  await settle(page);
+  await expect(page.getByTestId("space-plot")).toHaveAttribute("viewBox", plotViewport!);
   await page.getByRole("button", { name: "COMPARE", exact: true }).click();
   await expect(page.getByTestId("compare-distance")).toHaveText(
     a.same_token_layer_distance[2][3][9].toFixed(6),
