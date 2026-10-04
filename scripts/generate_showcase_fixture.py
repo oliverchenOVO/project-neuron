@@ -14,7 +14,7 @@ from engine.config import MODEL_ID, MODEL_REVISION
 from engine.inference import AnalysisEngine
 from engine.model_loader import ModelLoader
 
-GENERATOR_VERSION = "1.0.0"
+GENERATOR_VERSION = "1.1.0"
 PROMPTS = {"showcase": "The cat sat on the mat", "stress-64": " hello" * 64}
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -22,13 +22,13 @@ ROOT = Path(__file__).resolve().parents[1]
 def fixture_result(engine, name, timings=None):
     result = engine.analyze(PROMPTS[name])
     if timings is not None:
-        timings.update({key:result["metadata"][key] for key in ("forward_ms","analysis_ms","cache_hit")})
+        timings.update({key:result["metadata"][key] for key in ("forward_ms","analysis_ms","new_metrics_ms","cache_hit")})
     if result["metadata"]["model_revision"] != MODEL_REVISION:
         raise RuntimeError("Fixture generation requires the verified pinned local checkpoint.")
     # These fields describe the generator machine/timing, not model-derived
     # values. Omit them from committed fixtures; tensors/metrics are untouched.
     metadata = {k:v for k,v in result["metadata"].items() if k not in
-                {"model_source", "cache_hit", "forward_ms", "analysis_ms", "request_ms"}}
+                {"model_source", "cache_hit", "forward_ms", "analysis_ms", "request_ms", "new_metrics_ms"}}
     result["metadata"] = metadata
     result["fixture"] = {"notice":"GENERATED FROM REAL GPT-2 OUTPUT — NOT MOCK DATA",
         "name":name,"public_prompt":PROMPTS[name],"generator_version":GENERATOR_VERSION,

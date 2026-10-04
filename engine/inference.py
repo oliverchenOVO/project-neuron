@@ -10,8 +10,8 @@ from .errors import EngineError
 from .hidden_state_analysis import magnitudes, changes
 from .model_loader import ModelLoader, MODEL_ID
 from .prediction import logit_lens, top_predictions
-from .projection import pca_2d
-from .similarity import cosine_matrix
+from .projection import pca_2d, fit_shared_pca
+from .similarity import cosine_matrix, same_token_layer_metrics
 from .tokenizer_analysis import MAX_TOKENS, tokenize
 
 
@@ -93,6 +93,10 @@ class AnalysisEngine:
         model, tokenizer = self.loader.model, self.loader.tokenizer
         states = signals.representations
         pca = [pca_2d(h) for h in states]
+        metric_started = time.perf_counter()
+        shared = fit_shared_pca(states).export()
+        layer_cosine, layer_distance = same_token_layer_metrics(states)
+        new_metrics_ms = (time.perf_counter() - metric_started) * 1000
         result = {
             "metadata": {"model": MODEL_ID, "model_revision": self.loader.revision,
                 "model_source": str(self.loader.model_dir) if self.loader.model_dir else "huggingface_cache",
@@ -107,7 +111,7 @@ class AnalysisEngine:
                 "logit_lens_position": len(signals.tokens) - 1,
                 "local_inference": True, "local_only_loading": self.loader.offline,
                 "torch_version": torch.__version__, "transformers_version": transformers.__version__,
-                "cache_hit": False, "forward_ms": forward_ms},
+                "cache_hit": False, "forward_ms": forward_ms, "new_metrics_ms": new_metrics_ms},
             "tokens": signals.tokens,
             "token_ids": signals.input_ids[0].cpu().tolist(),
             "layer_count": model.config.n_layer,
@@ -124,6 +128,9 @@ class AnalysisEngine:
             "hidden_similarity": [cosine_matrix(h).cpu().tolist() for h in states],
             "pca_coordinates": [p["coordinates"] for p in pca],
             "pca_explained_variance_ratio": [p["explained_variance_ratio"] for p in pca],
+            "shared_pca": shared,
+            "same_token_layer_similarity": layer_cosine,
+            "same_token_layer_distance": layer_distance,
             "attention_matrices": serialize_attention(signals.attentions),
             "final_top_k": top_predictions(signals.logits[0, -1], tokenizer, top_k),
             "logit_lens_top_k": logit_lens(model, states, tokenizer, top_k),
