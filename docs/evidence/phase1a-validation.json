@@ -102,7 +102,7 @@
     "desktop-1280"
   ],
   "repository_private": true,
-  "ci_status": "PENDING for final validation commit",
+  "ci_status": "COMPLETED SUCCESS",
   "prior_functional_commit": "40f84dce229f4045cf07676a9ff9b3ca8a81637e",
   "prior_functional_ci": {
     "browser": {
@@ -114,5 +114,19 @@
       "conclusion": "success"
     }
   },
-  "trail_hover_preserves_axis_viewport": true
+  "trail_hover_preserves_axis_viewport": true,
+  "phase_status": "PHASE 1A PASS",
+  "validated_implementation_commit": "bab3504e4bd8b2a99853ca50eb323c727efd9cf0",
+  "implementation_ci": {
+    "browser": {
+      "run_id": 37188862092,
+      "status": "completed",
+      "conclusion": "success"
+    },
+    "engine": {
+      "run_id": 37188862174,
+      "status": "completed",
+      "conclusion": "success"
+    }
+  }
 }

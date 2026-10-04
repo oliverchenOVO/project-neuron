@@ -1,9 +1,8 @@
-# PHASE 1A VALIDATION — CI PENDING
+# PHASE 1A VALIDATION — PHASE 1A PASS
 
-Recorded 2026-10-04, Asia/Taipei. Local gates pass. Functional milestone
-`40f84dc` passed Engine and Browser CI; the final validation commit must also
-complete CI before Phase 1A is declared PASS. Complete desktop Phase 1 remains
-INCOMPLETE.
+Recorded 2026-10-04, Asia/Taipei. All Phase 1A acceptance gates A–AC pass.
+Final implementation `bab3504` completed BOTH Engine and Browser CI successfully.
+Complete desktop Phase 1 remains INCOMPLETE; this passes the browser core milestone.
 
 ## IMPLEMENTED
 
@@ -235,16 +234,16 @@ nearest-rank p95 is maximum; slow loads are included rather than discarded.
 
 | Fixture | Stage | Median ms | p95 ms |
 |---|---|---:|---:|
-| showcase | fetchMs | 5.80 | 16.30 |
-| showcase | parseMs | 0.70 | 1.60 |
-| showcase | validationMs | 1.60 | 15.40 |
+| showcase | fetchMs | 4.40 | 16.70 |
+| showcase | parseMs | 0.30 | 0.60 |
+| showcase | validationMs | 0.80 | 3.40 |
 | showcase | stateMs | 0.10 | 0.20 |
-| showcase | firstRenderMs | 26.70 | 120.50 |
-| stress-64 | fetchMs | 97.90 | 523.40 |
-| stress-64 | parseMs | 31.20 | 38.10 |
-| stress-64 | validationMs | 12.90 | 16.80 |
+| showcase | firstRenderMs | 28.60 | 132.40 |
+| stress-64 | fetchMs | 59.90 | 428.70 |
+| stress-64 | parseMs | 15.40 | 18.60 |
+| stress-64 | validationMs | 7.10 | 9.80 |
 | stress-64 | stateMs | 0.10 | 0.20 |
-| stress-64 | firstRenderMs | 31.60 | 42.40 |
+| stress-64 | firstRenderMs | 16.60 | 20.90 |
 
 ### Browser interactions
 
@@ -254,16 +253,16 @@ readiness is separate. Selection retains the object instead of cloning/refetchin
 
 | Fixture | Kind | Samples | JS median | JS p95 | Next rAF median | Next rAF p95 |
 |---|---|---:|---:|---:|---:|---:|
-| showcase | similarity-layer | 59 | 1.50 | 2.70 | 5.50 | 11.50 |
-| showcase | space-layer | 60 | 1.40 | 2.20 | 10.00 | 13.00 |
-| showcase | trail-token | 60 | 1.80 | 2.70 | 5.20 | 10.40 |
-| showcase | compare-layer | 60 | 1.40 | 1.60 | 5.50 | 8.70 |
-| showcase | microscope-mode | 63 | 6.80 | 12.10 | 10.80 | 15.40 |
-| stress-64 | similarity-layer | 59 | 8.00 | 10.80 | 15.40 | 20.00 |
-| stress-64 | space-layer | 60 | 1.80 | 2.30 | 11.00 | 12.50 |
-| stress-64 | trail-token | 60 | 2.80 | 3.50 | 5.60 | 8.20 |
-| stress-64 | compare-layer | 60 | 1.20 | 1.50 | 4.20 | 9.20 |
-| stress-64 | microscope-mode | 63 | 7.00 | 10.90 | 12.50 | 20.00 |
+| showcase | similarity-layer | 59 | 0.60 | 0.90 | 13.10 | 14.70 |
+| showcase | space-layer | 60 | 0.80 | 1.10 | 12.70 | 13.70 |
+| showcase | trail-token | 60 | 0.70 | 1.00 | 11.60 | 13.30 |
+| showcase | compare-layer | 60 | 0.60 | 0.90 | 11.50 | 13.60 |
+| showcase | microscope-mode | 63 | 4.20 | 7.30 | 11.70 | 13.60 |
+| stress-64 | similarity-layer | 59 | 3.20 | 4.30 | 12.90 | 14.00 |
+| stress-64 | space-layer | 60 | 1.30 | 2.20 | 10.80 | 12.60 |
+| stress-64 | trail-token | 60 | 1.80 | 3.00 | 7.70 | 11.00 |
+| stress-64 | compare-layer | 60 | 0.90 | 1.40 | 7.40 | 10.50 |
+| stress-64 | microscope-mode | 63 | 5.10 | 8.60 | 12.90 | 15.00 |
 
 All five required kinds satisfy p95 <50ms for both fixtures; zero page errors.
 [Complete raw browser measurements](evidence/phase1a-browser-benchmark.json).
@@ -279,8 +278,8 @@ browser timer quantization, not zero CPU cost. Endpoints/reduced motion are E2E 
 
 | Fixture | Frames | Interval median | Interval p95 | Callback median | Callback p95 |
 |---|---:|---:|---:|---:|---:|
-| showcase | 225 | 16.70 | 16.73 | 0.00 | 0.10 |
-| stress-64 | 228 | 16.70 | 16.70 | 0.00 | 0.10 |
+| showcase | 228 | 16.70 | 16.80 | 0.00 | 0.10 |
+| stress-64 | 225 | 16.70 | 16.80 | 0.00 | 0.10 |
 
 ## 64-TOKEN RESULT
 
@@ -297,14 +296,20 @@ retained, no reinitialization/squash. `07a8fc4`: shared analysis; `40f84dc`:
 four-mode microscope. Final validation commit adds evidence/report/README and
 corrects first-rAF interval measurement. A final correction keeps trail hover
 readouts from resizing the axis viewport. Private visibility checked by gh CLI.
-Final clean/synchronized state is checked after push.
+Implementation main/remote were synchronized and clean after push. The final
+documentation-only evidence update is checked again before delivery.
 
 ## REMOTE CI
 
-Functional commit `40f84dc` completed both workflows successfully:
-[Browser](https://github.com/oliverchenOVO/project-neuron/actions/runs/37188088418),
-[Engine](https://github.com/oliverchenOVO/project-neuron/actions/runs/37188088430).
-Final validation commit: **CI PENDING**. Push success alone is not CI success.
+Final implementation `bab3504e4bd8b2a99853ca50eb323c727efd9cf0` completed both
+Windows workflows with conclusion SUCCESS:
+
+- [Browser CI](https://github.com/oliverchenOVO/project-neuron/actions/runs/37188862092): npm ci, 57 tests, production build and 11 E2E passed.
+- [Engine CI](https://github.com/oliverchenOVO/project-neuron/actions/runs/37188862174): pinned real model, 50 tests, CLI/Phase 0 validation and independent fixture reproducibility passed.
+
+Earlier engine/frontend/validation milestone CI also passed. Push success and CI
+success were checked separately. A final documentation-only commit records these
+completed results; its repeated workflows are also checked before delivery.
 
 ## ACCEPTANCE GATES
 
@@ -336,8 +341,8 @@ Final validation commit: **CI PENDING**. Push success alone is not CI success.
 | X | Playwright | PASS — 11 without updates |
 | Y | Visual review | PASS — six scenes + both desktops |
 | Z | Private repo | PASS — PRIVATE verified |
-| AA | Browser CI | PENDING — final validation commit |
-| AB | Engine CI | PENDING — final validation commit |
+| AA | Browser CI | PASS — completed SUCCESS, run 37188862092 |
+| AB | Engine CI | PASS — completed SUCCESS, run 37188862174 |
 | AC | No Electron | PASS — no live wiring or packaging |
 
 ## KNOWN LIMITATIONS
