@@ -1,0 +1,330 @@
+{
+  "baseline_commit": "192d12d4030c9f8c4e9a303d5cd69d754652f216",
+  "method": "One resident pinned CPU model; 2 warmups, 7 paired uncached requests, alternating pipeline order; same fixed public prompts. JSON encoding timed separately.",
+  "model_loading_ms": 714.0176999964751,
+  "cpu_threads": 4,
+  "fixtures": {
+    "showcase": {
+      "samples": {
+        "before": [
+          {
+            "forward_ms": 277.71159997791983,
+            "derived_ms": 278.14730000682175,
+            "analysis_ms": 555.8588999847416,
+            "request_ms": 563.7440999853425,
+            "new_metrics_ms": 0,
+            "serialization_ms": 7.608399988384917,
+            "bytes": 99198
+          },
+          {
+            "forward_ms": 88.16809998825192,
+            "derived_ms": 152.89810000103898,
+            "analysis_ms": 241.0661999892909,
+            "request_ms": 246.07409999589436,
+            "new_metrics_ms": 0,
+            "serialization_ms": 4.62699998752214,
+            "bytes": 99197
+          },
+          {
+            "forward_ms": 114.33129999204539,
+            "derived_ms": 167.60040001827292,
+            "analysis_ms": 281.9317000103183,
+            "request_ms": 287.0083999878261,
+            "new_metrics_ms": 0,
+            "serialization_ms": 4.841000016313046,
+            "bytes": 99198
+          },
+          {
+            "forward_ms": 131.71429999056272,
+            "derived_ms": 182.39370000083,
+            "analysis_ms": 314.1079999913927,
+            "request_ms": 321.2139999959618,
+            "new_metrics_ms": 0,
+            "serialization_ms": 4.6079000167082995,
+            "bytes": 99198
+          },
+          {
+            "forward_ms": 101.99150000698864,
+            "derived_ms": 172.45099999126978,
+            "analysis_ms": 274.4424999982584,
+            "request_ms": 280.32940000412054,
+            "new_metrics_ms": 0,
+            "serialization_ms": 3.961700014770031,
+            "bytes": 99198
+          },
+          {
+            "forward_ms": 3195.330999995349,
+            "derived_ms": 4523.7813999992795,
+            "analysis_ms": 7719.1123999946285,
+            "request_ms": 7725.715899985516,
+            "new_metrics_ms": 0,
+            "serialization_ms": 5.94870001077652,
+            "bytes": 99199
+          },
+          {
+            "forward_ms": 2559.274600003846,
+            "derived_ms": 254.0113000140991,
+            "analysis_ms": 2813.285900017945,
+            "request_ms": 2818.4703000006266,
+            "new_metrics_ms": 0,
+            "serialization_ms": 4.492700012633577,
+            "bytes": 99197
+          }
+        ],
+        "after": [
+          {
+            "forward_ms": 127.21510001574643,
+            "derived_ms": 180.72649999521673,
+            "analysis_ms": 307.94160001096316,
+            "request_ms": 318.37259998428635,
+            "new_metrics_ms": 10.756900010164827,
+            "serialization_ms": 9.727700002258644,
+            "bytes": 139139
+          },
+          {
+            "forward_ms": 119.14439999964088,
+            "derived_ms": 147.20350000425242,
+            "analysis_ms": 266.3479000038933,
+            "request_ms": 272.9395000205841,
+            "new_metrics_ms": 7.72359999245964,
+            "serialization_ms": 7.0838000101502985,
+            "bytes": 139135
+          },
+          {
+            "forward_ms": 89.22490000259131,
+            "derived_ms": 173.2501000224147,
+            "analysis_ms": 262.475000025006,
+            "request_ms": 273.02140000392683,
+            "new_metrics_ms": 6.249500002013519,
+            "serialization_ms": 7.3096000123769045,
+            "bytes": 139133
+          },
+          {
+            "forward_ms": 144.22250000643544,
+            "derived_ms": 226.20439997990616,
+            "analysis_ms": 370.4268999863416,
+            "request_ms": 376.7983000143431,
+            "new_metrics_ms": 9.182100009638816,
+            "serialization_ms": 6.5700999984983355,
+            "bytes": 139136
+          },
+          {
+            "forward_ms": 219.3701000069268,
+            "derived_ms": 391.93230000091717,
+            "analysis_ms": 611.302400007844,
+            "request_ms": 618.6603000096511,
+            "new_metrics_ms": 19.41929999156855,
+            "serialization_ms": 7.026799983577803,
+            "bytes": 139133
+          },
+          {
+            "forward_ms": 1349.8649999964982,
+            "derived_ms": 8063.789599982556,
+            "analysis_ms": 9413.654599979054,
+            "request_ms": 9423.240000003716,
+            "new_metrics_ms": 1144.0421000006609,
+            "serialization_ms": 9.186300012515858,
+            "bytes": 139137
+          },
+          {
+            "forward_ms": 218.84009998757392,
+            "derived_ms": 194.86459999461658,
+            "analysis_ms": 413.7046999821905,
+            "request_ms": 419.06280000694096,
+            "new_metrics_ms": 4.4695000106003135,
+            "serialization_ms": 6.596599996555597,
+            "bytes": 139137
+          }
+        ]
+      },
+      "medians": {
+        "before": {
+          "forward_ms": 131.71429999056272,
+          "derived_ms": 182.39370000083,
+          "analysis_ms": 314.1079999913927,
+          "request_ms": 321.2139999959618,
+          "new_metrics_ms": 0,
+          "serialization_ms": 4.62699998752214,
+          "bytes": 99198
+        },
+        "after": {
+          "forward_ms": 144.22250000643544,
+          "derived_ms": 194.86459999461658,
+          "analysis_ms": 370.4268999863416,
+          "request_ms": 376.7983000143431,
+          "new_metrics_ms": 9.182100009638816,
+          "serialization_ms": 7.0838000101502985,
+          "bytes": 139136
+        }
+      },
+      "analysis_delta_ms": 56.31889999494888,
+      "derived_delta_ms": 12.470899993786588
+    },
+    "stress-64": {
+      "samples": {
+        "before": [
+          {
+            "forward_ms": 306.62749998737127,
+            "derived_ms": 270.0392999977339,
+            "analysis_ms": 576.6667999851052,
+            "request_ms": 1106.1866000236478,
+            "new_metrics_ms": 0,
+            "serialization_ms": 584.7508999868296,
+            "bytes": 8623176
+          },
+          {
+            "forward_ms": 274.0884999802802,
+            "derived_ms": 260.6161000148859,
+            "analysis_ms": 534.7045999951661,
+            "request_ms": 909.89609999815,
+            "new_metrics_ms": 0,
+            "serialization_ms": 571.6562000161503,
+            "bytes": 8623175
+          },
+          {
+            "forward_ms": 1093.0555000086315,
+            "derived_ms": 894.8450000025332,
+            "analysis_ms": 1987.9005000111647,
+            "request_ms": 2499.485799984541,
+            "new_metrics_ms": 0,
+            "serialization_ms": 400.2129000145942,
+            "bytes": 8623178
+          },
+          {
+            "forward_ms": 1135.9212000097614,
+            "derived_ms": 328.22910000686534,
+            "analysis_ms": 1464.1503000166267,
+            "request_ms": 1785.0963000091724,
+            "new_metrics_ms": 0,
+            "serialization_ms": 373.6771999974735,
+            "bytes": 8623178
+          },
+          {
+            "forward_ms": 260.8122999954503,
+            "derived_ms": 206.66900000651367,
+            "analysis_ms": 467.481300001964,
+            "request_ms": 946.5261000150349,
+            "new_metrics_ms": 0,
+            "serialization_ms": 395.50230000168085,
+            "bytes": 8623173
+          },
+          {
+            "forward_ms": 202.72359999944456,
+            "derived_ms": 226.27789998659864,
+            "analysis_ms": 429.0014999860432,
+            "request_ms": 708.8460999948438,
+            "new_metrics_ms": 0,
+            "serialization_ms": 404.4010000070557,
+            "bytes": 8623176
+          },
+          {
+            "forward_ms": 210.46899998327717,
+            "derived_ms": 231.45089999889024,
+            "analysis_ms": 441.9198999821674,
+            "request_ms": 904.4091000105254,
+            "new_metrics_ms": 0,
+            "serialization_ms": 357.5127999938559,
+            "bytes": 8623176
+          }
+        ],
+        "after": [
+          {
+            "forward_ms": 315.69049999234267,
+            "derived_ms": 457.9636999987997,
+            "analysis_ms": 773.6541999911424,
+            "request_ms": 1820.2583999955095,
+            "new_metrics_ms": 133.02959999418817,
+            "serialization_ms": 1238.1881999899633,
+            "bytes": 9042382
+          },
+          {
+            "forward_ms": 9781.993600015994,
+            "derived_ms": 1865.8004000026267,
+            "analysis_ms": 11647.79400001862,
+            "request_ms": 11948.427499999525,
+            "new_metrics_ms": 503.6827999865636,
+            "serialization_ms": 448.85730001260526,
+            "bytes": 9042380
+          },
+          {
+            "forward_ms": 366.6289999964647,
+            "derived_ms": 844.0780999953859,
+            "analysis_ms": 1210.7070999918506,
+            "request_ms": 1513.5481999896,
+            "new_metrics_ms": 426.93069999222644,
+            "serialization_ms": 473.5874000180047,
+            "bytes": 9042383
+          },
+          {
+            "forward_ms": 462.4404000060167,
+            "derived_ms": 1006.2543000094593,
+            "analysis_ms": 1468.694700015476,
+            "request_ms": 1882.2834999882616,
+            "new_metrics_ms": 316.36349999462254,
+            "serialization_ms": 632.8953000192996,
+            "bytes": 9042381
+          },
+          {
+            "forward_ms": 319.4660000153817,
+            "derived_ms": 468.49899998051114,
+            "analysis_ms": 787.9649999958929,
+            "request_ms": 1189.7346999903675,
+            "new_metrics_ms": 179.89719999604858,
+            "serialization_ms": 572.9987999948207,
+            "bytes": 9042381
+          },
+          {
+            "forward_ms": 592.1531000058167,
+            "derived_ms": 494.33119999594055,
+            "analysis_ms": 1086.4843000017572,
+            "request_ms": 1429.8024000017904,
+            "new_metrics_ms": 196.67740000295453,
+            "serialization_ms": 364.14209997747093,
+            "bytes": 9042383
+          },
+          {
+            "forward_ms": 247.103400004562,
+            "derived_ms": 399.67780001461506,
+            "analysis_ms": 646.781200019177,
+            "request_ms": 1013.6644000012893,
+            "new_metrics_ms": 157.60980002232827,
+            "serialization_ms": 540.9527000156231,
+            "bytes": 9042378
+          }
+        ]
+      },
+      "medians": {
+        "before": {
+          "forward_ms": 274.0884999802802,
+          "derived_ms": 260.6161000148859,
+          "analysis_ms": 534.7045999951661,
+          "request_ms": 946.5261000150349,
+          "new_metrics_ms": 0,
+          "serialization_ms": 400.2129000145942,
+          "bytes": 8623176
+        },
+        "after": {
+          "forward_ms": 366.6289999964647,
+          "derived_ms": 494.33119999594055,
+          "analysis_ms": 1086.4843000017572,
+          "request_ms": 1513.5481999896,
+          "new_metrics_ms": 196.67740000295453,
+          "serialization_ms": 540.9527000156231,
+          "bytes": 9042381
+        }
+      },
+      "analysis_delta_ms": 551.7797000065912,
+      "derived_delta_ms": 233.71509998105466
+    }
+  },
+  "environment": {
+    "python": "3.12.10",
+    "torch": "2.14.1+cpu",
+    "transformers": "4.57.6",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "cpu": "12th Gen Intel(R) Core(TM) i9-12900H",
+    "logical_cores": 20,
+    "model_revision": "607a30d783dfa663caf39e06633721c8d4cfcd7e",
+    "solver": "float64 symmetric eigh; smaller sample Gram/feature covariance"
+  }
+}

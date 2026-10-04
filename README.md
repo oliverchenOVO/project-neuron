@@ -3,10 +3,10 @@
 Make the invisible internal signals of a Transformer visible.
 
 An instrument for observing **real local GPT-2 forward passes**, not a chatbot.
-Current milestone: Phase 0.5, real-data browser microscope. Phase 1 is incomplete.
+Current milestone: Phase 1A, Microscope Core. The complete desktop Phase 1 remains incomplete.
 No simulated model data or fabricated progress is used.
 
-**Phase 0 passed:** 36 local tests, real CPU/offline GPT-2 forward pass and worker
+**Phase 0 passed:** real CPU/offline GPT-2 forward pass and worker
 roundtrip verified. See [validation evidence](docs/PHASE0_VALIDATION.md) and the
 [Phase 1 acceptance ledger](docs/PHASE1_VALIDATION.md) for exact scope and limits.
 
@@ -24,21 +24,31 @@ npm run build
 npm run preview
 ```
 
-Open `http://127.0.0.1:4173`. Select **sat** to open arcs, change Layers 01 → 06 →
-12 and AVG / H01–H12, then inspect raw residual magnitude, change and targets.
+Open `http://127.0.0.1:4173`. Select **sat**, choose **SIMILARITY**, and change
+Layers 01 → 06 → 12 to inspect genuine signed cosine relationships. Switch to
+**SPACE**, select Layer 06, and turn **TRAIL ON** to see EMB → L12 in one shared
+PCA basis with fixed axes. **COMPARE** defaults to L03 → L09 and displays full
+hidden-space L2/cosine, magnitudes and shared projected coordinates.
+
+**ATTENTION** preserves heatmap/arcs and AVG / H01–H12; heads affect attention only.
 HEATMAP retains all query/key cells, including future zeros. Arrow keys on the
 matrix inspect exact values; Enter selects its query. Up/down elsewhere changes
 layer. Use the fixture menu for the 64-token stress scene.
 
-Matrix Hero: 1920×1080, public prompt `The cat sat on the mat`, Layer 01 / AVG,
-no selected query. This is an actual Playwright browser screenshot.
+Phase 1A hero: 1920×1080, `The cat sat on the mat`, selected **sat**, SPACE,
+Layer 06, TRAIL ON. An actual production-browser screenshot:
 
-![Matrix Hero](docs/screenshots/matrix-hero.png)
+![Shared-space trail hero](docs/screenshots/phase1a-trail-hero.png)
 
-Arc Hero: same fixture, Layer 01 / AVG, selected query position 2 (` sat`, ID
-3332). Every edge comes from the genuine attention row; the loop is self-attention.
+Second hero: selected **sat**, SIMILARITY, Layer 06. Every cell and ranking
+comes from genuine raw hidden-state cosine; self is excluded from ranking.
 
-![Arc Hero](docs/screenshots/arc-hero.png)
+![Similarity hero](docs/screenshots/phase1a-similarity-matrix.png)
+
+The [original Matrix Hero](docs/screenshots/matrix-hero.png) and
+[Arc Hero](docs/screenshots/arc-hero.png), old evidence and four old snapshot
+baselines remain unchanged. `/?legacy=1` reproduces the Phase 0.5 frame using
+archived schema 0.1.1 fixtures. The default route uses schema 0.2.0.
 
 Reproduce public fixtures with the existing local checkpoint:
 
@@ -50,7 +60,7 @@ npm test
 npx playwright install chromium
 npm run test:e2e
 # Start npm run preview in another terminal, then:
-npm run benchmark
+npm run benchmark:core
 ```
 
 Fixed public prompts only: the six-token smoke sentence and ` hello` repeated
@@ -59,8 +69,9 @@ Fixed public prompts only: the six-token smoke sentence and ` hello` repeated
 edited. Compact JSON separators omit whitespace; only machine/timing metadata
 is omitted. Private prompt-derived `artifacts/` remain ignored.
 
-See [Phase 0.5 validation](docs/PHASE0_5_VALIDATION.md) for gates, screenshots,
-production browser timings, methodology and remaining limits. Baseline updates
+See [Phase 1A validation](docs/PHASE1A_VALIDATION.md) for all A–AC gates,
+screenshots, separate engine/browser costs, reproducibility and completed CI.
+[Phase 0.5 validation](docs/PHASE0_5_VALIDATION.md) preserves the prior evidence. Baseline updates
 are deliberate: `npm run test:visual:update`; normal verification never updates
 snapshots. Windows screenshot baselines are tied to the recorded Chromium/font
 environment.
@@ -149,7 +160,9 @@ repository.
 Representation Magnitude is an L2 norm; Representation Change is an L2 distance
 from the preceding layer. Similarity is pairwise cosine similarity. Attention
 matrices are actual attention weights indexed by query/key position. PCA is a
-2D projection; explained variance and independent axes are recorded. Final
+2D projection. SPACE uses one globally centered shared basis fitted to all 13
+representation layers/tokens and fixed padded domains; the original independent
+per-layer coordinates remain separate. Explained variance is displayed. Final
 Prediction uses final logits and a full-vocabulary softmax. Logit Lens Estimate
 projects intermediate residual streams through GPT-2's final normalization and
 LM head, using the final input position.
@@ -160,12 +173,14 @@ Attention weights should not automatically be read as a complete explanation of
 why GPT-2 produced an output. Hidden similarity and PCA are analytical views of
 internal vectors, not consciousness, semantic certainty or complete embedding
 space. Magnitude is not importance. Logit Lens is a diagnostic projection, not
-GPT-2's actual intermediate prediction process. PCA coordinates have independent
-axes at each layer; interpolated motion is not proof of a shared-space trajectory.
+GPT-2's actual intermediate prediction process. The original per-layer PCA field has independent axes. SPACE uses the new shared
+basis; TRAIL shows successive projected representations, not a causal reasoning
+path. Two dimensions lose information, and raw PCA can be dominated by large
+residual magnitudes. No semantic meanings are assigned to PC1 or PC2.
 
 ## Windows builds and screenshots
 
-**Windows executables are not available at Phase 0.5.** Phase 1D will freeze `neuron-engine.exe` using
+**Windows executables are not available at Phase 1A.** Phase 1D will freeze `neuron-engine.exe` using
 PyInstaller, bundle local weights, then use electron-builder for Windows x64
 NSIS and portable builds. End users must not need Python, Node or model libraries.
 Installers cannot be claimed complete until packaged offline/crash-recovery QA

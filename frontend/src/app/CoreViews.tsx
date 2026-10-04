@@ -566,13 +566,13 @@ function Space({
     const previous = current.current,
       start = performance.now();
     lastLayer.current = layer;
-    let frame = 0,
-      last = start;
+    let frame = 0;
+    let last: number | null = null;
     let active = true;
     const tick = (now: number) => {
       if (!active) return;
       const workStarted = performance.now();
-      const fraction = Math.min(1, (now - start) / 240);
+      const fraction = Math.max(0, Math.min(1, (now - start) / 240));
       const next = target.map((p, i) => ({
         ...p,
         x: previous[i].x + (p.x - previous[i].x) * fraction,
@@ -582,7 +582,7 @@ function Space({
       }));
       current.current = next;
       setPoints(next);
-      diagnostics.animationFrames.push({
+      if (last !== null) diagnostics.animationFrames.push({
         kind: "space",
         frameMs: now - last,
         updateMs: performance.now() - workStarted,

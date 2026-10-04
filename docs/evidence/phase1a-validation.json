@@ -1,0 +1,117 @@
+{
+  "date": "2026-10-04 Asia/Taipei",
+  "python": {
+    "tests": 50,
+    "failures": 0,
+    "skips": 0,
+    "seconds": 13.48
+  },
+  "frontend": {
+    "tests": 57,
+    "failures": 0
+  },
+  "playwright": {
+    "tests": 11,
+    "failures": 0,
+    "seconds": 20.4,
+    "updates": false
+  },
+  "production_build": true,
+  "fixtures": [
+    {
+      "name": "showcase",
+      "old_bytes": 99380,
+      "new_bytes": 139283,
+      "delta_bytes": 39903,
+      "delta_percent": 40.151942040652045,
+      "old_sha256": "80dbc75f8214a5a5f5240da60c282e06cb02bca3065c4f8f8854959f20eaea18",
+      "new_sha256": "0f006a8b315ce22ba14eaeedc2b1337078fe9fe70f0daa4607e198db03f171e8",
+      "unchanged_derived_fields": [
+        "tokens",
+        "token_ids",
+        "layer_count",
+        "head_count",
+        "tensor_shapes",
+        "representation_magnitude",
+        "representation_delta",
+        "hidden_similarity",
+        "pca_coordinates",
+        "pca_explained_variance_ratio",
+        "attention_matrices",
+        "final_top_k",
+        "logit_lens_top_k"
+      ],
+      "unchanged_derived_fields_exact": true
+    },
+    {
+      "name": "stress-64",
+      "old_bytes": 8623721,
+      "new_bytes": 9042891,
+      "delta_bytes": 419170,
+      "delta_percent": 4.8606628159700405,
+      "old_sha256": "40be8e8623e816a6781f5a6dde077d4ded0fb5fab5c769c3cf4cf734881423b4",
+      "new_sha256": "498f1c185af8aef8e4ba765a97dbbd18affde7eeb143d6a05f2a4879387d61d9",
+      "unchanged_derived_fields": [
+        "tokens",
+        "token_ids",
+        "layer_count",
+        "head_count",
+        "tensor_shapes",
+        "representation_magnitude",
+        "representation_delta",
+        "hidden_similarity",
+        "pca_coordinates",
+        "pca_explained_variance_ratio",
+        "attention_matrices",
+        "final_top_k",
+        "logit_lens_top_k"
+      ],
+      "unchanged_derived_fields_exact": true
+    }
+  ],
+  "old_visual_baselines": [
+    {
+      "path": "frontend/e2e/microscope.spec.ts-snapshots/arc-hero-win32.png",
+      "sha256": "0fe567d10addb46da3e4e66df8e690c59e78421880202a366ab36af2e80bcd54",
+      "exact_phase05_blob": true
+    },
+    {
+      "path": "frontend/e2e/microscope.spec.ts-snapshots/layer06-head04-win32.png",
+      "sha256": "18a922b57fc67d6f28e3df9867e6cf905a24f47b42bdc5517a6010bbc671a112",
+      "exact_phase05_blob": true
+    },
+    {
+      "path": "frontend/e2e/microscope.spec.ts-snapshots/matrix-hero-win32.png",
+      "sha256": "3e163ae2396e6b2f011bbba479c33c9f01353895a32c68385a997e587cdb023f",
+      "exact_phase05_blob": true
+    },
+    {
+      "path": "frontend/e2e/microscope.spec.ts-snapshots/stress64-heatmap-win32.png",
+      "sha256": "ce38b32fa5e37801ec351ea0e1be07823614de230f9f00fbaee10b4c32fa037d",
+      "exact_phase05_blob": true
+    }
+  ],
+  "reviewed_scenes": [
+    "similarity-matrix",
+    "similarity-graph",
+    "shared-pca-space",
+    "representation-trail",
+    "compare-mode",
+    "space64-stress",
+    "desktop-1440",
+    "desktop-1280"
+  ],
+  "repository_private": true,
+  "ci_status": "PENDING for final validation commit",
+  "prior_functional_commit": "40f84dce229f4045cf07676a9ff9b3ca8a81637e",
+  "prior_functional_ci": {
+    "browser": {
+      "run_id": 37188088418,
+      "conclusion": "success"
+    },
+    "engine": {
+      "run_id": 37188088430,
+      "conclusion": "success"
+    }
+  }
+}
