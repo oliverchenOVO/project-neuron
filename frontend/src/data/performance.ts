@@ -15,6 +15,7 @@ export interface InteractionTiming {
 export const diagnostics = {
   loads: [] as LoadTimings[],
   interactions: [] as InteractionTiming[],
+  animationFrames: [] as { kind: string; frameMs: number; updateMs: number }[],
 };
 declare global {
   interface Window {

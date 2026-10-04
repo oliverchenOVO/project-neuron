@@ -4,6 +4,7 @@ import type {
   FixtureId,
   HeadSelection,
   VisualizationMode,
+  MicroscopeMode,
 } from "../types/analysis";
 import { fixtureSource, type AnalysisDataSource } from "../data/source";
 import {
@@ -21,6 +22,15 @@ interface MicroscopeState {
   selectedToken: number | null;
   hoveredToken: number | null;
   visualizationMode: VisualizationMode;
+  microscopeMode: MicroscopeMode;
+  similarityView: "MATRIX" | "GRAPH";
+  trail: boolean;
+  compareFrom: number;
+  compareTo: number;
+  setMicroscopeMode: (mode: MicroscopeMode) => void;
+  setSimilarityView: (mode: "MATRIX" | "GRAPH") => void;
+  setTrail: (enabled: boolean) => void;
+  setCompare: (side: "from" | "to", layer: number) => void;
   loadTimings: LoadTimings | null;
   renderStarted: number;
   load: (id: FixtureId, source?: AnalysisDataSource) => Promise<void>;
@@ -32,6 +42,7 @@ interface MicroscopeState {
   setMode: (mode: VisualizationMode) => void;
 }
 let request = 0;
+let activeSource: AnalysisDataSource = fixtureSource;
 export const useMicroscope = create<MicroscopeState>((set, get) => ({
   analysis: null,
   fixtureId: "showcase",
@@ -42,9 +53,15 @@ export const useMicroscope = create<MicroscopeState>((set, get) => ({
   selectedToken: null,
   hoveredToken: null,
   visualizationMode: "HEATMAP",
+  microscopeMode: "ATTENTION",
+  similarityView: "MATRIX",
+  trail: false,
+  compareFrom: 3,
+  compareTo: 9,
   loadTimings: null,
   renderStarted: 0,
   load: async (id, source = fixtureSource) => {
+    activeSource = source;
     const ticket = ++request;
     set({ fixtureId: id, status: "loading", error: null, analysis: null });
     try {
@@ -59,6 +76,11 @@ export const useMicroscope = create<MicroscopeState>((set, get) => ({
         selectedToken: null,
         hoveredToken: null,
         visualizationMode: "HEATMAP",
+        microscopeMode: "ATTENTION",
+        similarityView: "MATRIX",
+        trail: false,
+        compareFrom: 3,
+        compareTo: 9,
         loadTimings: result.timings,
         renderStarted: start,
       });
@@ -75,12 +97,21 @@ export const useMicroscope = create<MicroscopeState>((set, get) => ({
     }
   },
   retry: () => {
-    fixtureSource.clear(get().fixtureId);
-    void get().load(get().fixtureId);
+    activeSource.clear(get().fixtureId);
+    void get().load(get().fixtureId, activeSource);
   },
   setLayer: (layer) => {
-    if (Number.isInteger(layer) && layer >= 1 && layer <= 12 && layer !== get().selectedLayer) {
-      beginInteraction("layer");
+    if (
+      Number.isInteger(layer) &&
+      layer >= (get().microscopeMode === "ATTENTION" ? 1 : 0) &&
+      layer <= 12 &&
+      layer !== get().selectedLayer
+    ) {
+      beginInteraction(
+        get().microscopeMode === "ATTENTION"
+          ? "layer"
+          : `${get().microscopeMode.toLowerCase()}-layer`,
+      );
       set({ selectedLayer: layer });
     }
   },
@@ -94,12 +125,21 @@ export const useMicroscope = create<MicroscopeState>((set, get) => ({
     }
   },
   selectToken: (token, openArcs = true) => {
-    if (!Number.isInteger(token) || !get().analysis || token < 0 || token >= get().analysis!.tokens.length)
+    if (
+      !Number.isInteger(token) ||
+      !get().analysis ||
+      token < 0 ||
+      token >= get().analysis!.tokens.length
+    )
       return;
-    beginInteraction("token");
+    beginInteraction(
+      get().microscopeMode === "SPACE" ? "trail-token" : "token",
+    );
     set({
       selectedToken: token,
-      ...(openArcs ? { visualizationMode: "ARCS" as const } : {}),
+      ...(openArcs && get().microscopeMode === "ATTENTION"
+        ? { visualizationMode: "ARCS" as const }
+        : {}),
     });
   },
   hoverToken: (token) => set({ hoveredToken: token }),
@@ -107,6 +147,26 @@ export const useMicroscope = create<MicroscopeState>((set, get) => ({
     if (mode !== get().visualizationMode) {
       beginInteraction("mode");
       set({ visualizationMode: mode });
+    }
+  },
+  setMicroscopeMode: (mode) => {
+    if (mode !== get().microscopeMode) {
+      beginInteraction("microscope-mode");
+      set({ microscopeMode: mode });
+    }
+  },
+  setSimilarityView: (mode) => {
+    beginInteraction("similarity-view");
+    set({ similarityView: mode });
+  },
+  setTrail: (enabled) => {
+    beginInteraction("trail");
+    set({ trail: enabled });
+  },
+  setCompare: (side, layer) => {
+    if (Number.isInteger(layer) && layer >= 0 && layer <= 12) {
+      beginInteraction("compare-layer");
+      set(side === "from" ? { compareFrom: layer } : { compareTo: layer });
     }
   },
 }));

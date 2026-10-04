@@ -1,8 +1,10 @@
 import { test, expect } from "@playwright/test";
-import {readFileSync} from 'node:fs';
-import {getAttention,weightColor} from '../src/utils/attention';
-import type {AnalysisResult} from '../src/types/analysis';
-const real=JSON.parse(readFileSync('public/fixtures/showcase.json','utf8')) as AnalysisResult;
+import { readFileSync } from "node:fs";
+import { getAttention, weightColor } from "../src/utils/attention";
+import type { AnalysisResult } from "../src/types/analysis";
+const real = JSON.parse(
+  readFileSync("public/fixtures/legacy-0.1.1/showcase.json", "utf8"),
+) as AnalysisResult;
 const waitReady = async (page: import("@playwright/test").Page) => {
   await expect(page.getByTestId("prediction")).toHaveCount(10);
   await page.evaluate(
@@ -20,7 +22,7 @@ test("1920 real-data visual regression and complete interaction path", async ({
   page.on("console", (m) => {
     if (m.type() === "error") errors.push(m.text());
   });
-  await page.goto("/");
+  await page.goto("/?legacy=1");
   await waitReady(page);
   await expect(page).toHaveScreenshot("matrix-hero.png");
   await page.screenshot({ path: "../docs/screenshots/matrix-hero.png" });
@@ -55,7 +57,7 @@ test("64-token stress renders all cells, changes all controls, no refetch", asyn
     if (r.url().includes("/fixtures/")) requests++;
   });
   page.on("pageerror", (e) => errors.push(e.message));
-  await page.goto("/?fixture=stress-64");
+  await page.goto("/?legacy=1&fixture=stress-64");
   await waitReady(page);
   await expect(page.getByRole("button", { name: /^Token \d+:/ })).toHaveCount(
     64,
@@ -89,7 +91,7 @@ for (const viewport of [
     page,
   }) => {
     await page.setViewportSize(viewport);
-    await page.goto("/");
+    await page.goto("/?legacy=1");
     await waitReady(page);
     for (const name of ["Layer 12", "H12", "ARCS", "Information"]) {
       const button = page.getByRole("button", { name, exact: true });
@@ -113,22 +115,50 @@ for (const viewport of [
     });
   });
 test("missing / corrupt fixture errors and retry", async ({ page }) => {
-  await page.route("**/fixtures/showcase.json", (r) =>
+  await page.route("**/fixtures/legacy-0.1.1/showcase.json", (r) =>
     r.fulfill({ status: 404, body: "missing" }),
   );
-  await page.goto("/");
+  await page.goto("/?legacy=1");
   await expect(page.getByRole("alert")).toContainText("FIXTURE UNAVAILABLE");
   await expect(page.getByTestId("prediction")).toHaveCount(0);
-  await page.unroute("**/fixtures/showcase.json");
+  await page.unroute("**/fixtures/legacy-0.1.1/showcase.json");
   await page.getByRole("button", { name: "Retry fixture" }).click();
   await waitReady(page);
 });
-test('canvas pixels and hover tooltip derive from genuine weights',async({page})=>{
-  await page.goto('/');await waitReady(page);const canvas=page.locator('canvas'),box=(await canvas.boundingBox())!,matrix=getAttention(real,1,'AVG');
-  await page.mouse.move(box.x+box.width*2.5/6,box.y+box.height*4.5/6);
-  await expect(page.getByRole('tooltip')).toContainText(matrix[4][2].toFixed(6));
-  await expect(page.getByRole('tooltip')).toContainText('L01 / AVG');
-  const pixel=await canvas.evaluate((el)=>{const c=el as HTMLCanvasElement;return Array.from(c.getContext('2d')!.getImageData(Math.floor(c.width*2.5/6),Math.floor(c.height*4.5/6),1,1).data).slice(0,3);});
-  expect(`rgb(${pixel.join(',')})`).toBe(weightColor(matrix[4][2]));
-  await page.mouse.move(box.x+box.width*4.5/6,box.y+box.height*.5/6);await expect(page.getByRole('tooltip')).toContainText('0.000000');await expect(page.getByTestId('cell-readout')).toContainText('CAUSAL MASK');
+test("canvas pixels and hover tooltip derive from genuine weights", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await waitReady(page);
+  const canvas = page.locator("canvas"),
+    box = (await canvas.boundingBox())!,
+    matrix = getAttention(real, 1, "AVG");
+  await page.mouse.move(
+    box.x + (box.width * 2.5) / 6,
+    box.y + (box.height * 4.5) / 6,
+  );
+  await expect(page.getByRole("tooltip")).toContainText(
+    matrix[4][2].toFixed(6),
+  );
+  await expect(page.getByRole("tooltip")).toContainText("L01 / AVG");
+  const pixel = await canvas.evaluate((el) => {
+    const c = el as HTMLCanvasElement;
+    return Array.from(
+      c
+        .getContext("2d")!
+        .getImageData(
+          Math.floor((c.width * 2.5) / 6),
+          Math.floor((c.height * 4.5) / 6),
+          1,
+          1,
+        ).data,
+    ).slice(0, 3);
+  });
+  expect(`rgb(${pixel.join(",")})`).toBe(weightColor(matrix[4][2]));
+  await page.mouse.move(
+    box.x + (box.width * 4.5) / 6,
+    box.y + (box.height * 0.5) / 6,
+  );
+  await expect(page.getByRole("tooltip")).toContainText("0.000000");
+  await expect(page.getByTestId("cell-readout")).toContainText("CAUSAL MASK");
 });

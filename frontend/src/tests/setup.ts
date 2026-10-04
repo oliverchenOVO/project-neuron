@@ -8,6 +8,14 @@ class Observer {
   disconnect() {}
 }
 vi.stubGlobal("ResizeObserver", Observer);
+vi.stubGlobal(
+  "matchMedia",
+  vi.fn(() => ({
+    matches: true,
+    addEventListener() {},
+    removeEventListener() {},
+  })),
+);
 HTMLCanvasElement.prototype.getContext = vi.fn(() => ({
   scale() {},
   fillRect() {},

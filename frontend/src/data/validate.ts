@@ -95,6 +95,10 @@ function predictions(value: unknown, path: string, length = 10) {
 
 /** Validate all dimensions/semantics in place. No cloning, precision loss or default values. */
 export function validateAnalysis(value: unknown): AnalysisResult {
+  const version = (
+    value as { metadata?: { analysis_version?: unknown } } | null
+  )?.metadata?.analysis_version;
+  if (version !== "0.1.1" && version !== "0.2.0") fail("schema version");
   const a = object(value, "analysis", [
     "metadata",
     "fixture",
@@ -111,6 +115,13 @@ export function validateAnalysis(value: unknown): AnalysisResult {
     "attention_matrices",
     "final_top_k",
     "logit_lens_top_k",
+    ...(version === "0.2.0"
+      ? [
+          "shared_pca",
+          "same_token_layer_similarity",
+          "same_token_layer_distance",
+        ]
+      : []),
   ]);
   const m = object(a.metadata, "metadata", [
     "model",
@@ -133,7 +144,7 @@ export function validateAnalysis(value: unknown): AnalysisResult {
   ]);
   equal(m.model, "openai-community/gpt2", "model");
   equal(m.model_revision, REVISION, "revision");
-  equal(m.analysis_version, "0.1.1", "schema version");
+  equal(m.analysis_version, version, "schema version");
   equal(m.parameter_count, 124439808, "parameters");
   equal(m.attention_implementation, "eager", "attention implementation");
   equal(m.max_tokens, 64, "maximum context");
@@ -172,7 +183,7 @@ export function validateAnalysis(value: unknown): AnalysisResult {
     "fixture notice",
   );
   equal(f.model_revision, REVISION, "fixture revision");
-  equal(f.analysis_schema_version, "0.1.1", "fixture schema");
+  equal(f.analysis_schema_version, version, "fixture schema");
   equal(
     f.numerical_transformation,
     "none; original engine values preserved",
@@ -267,5 +278,97 @@ export function validateAnalysis(value: unknown): AnalysisResult {
   array(a.logit_lens_top_k, 13, "lens layers").forEach((v) =>
     predictions(v, "lens predictions"),
   );
+  if (version === "0.2.0") {
+    const p = object(a.shared_pca, "shared PCA", [
+      "projection_type",
+      "fit_scope",
+      "components",
+      "centering",
+      "fit_sample_count",
+      "domain_padding_fraction",
+      "explained_variance_ratio",
+      "axis_domain",
+      "coordinates",
+    ]);
+    equal(p.projection_type, "global_pca", "shared projection type");
+    equal(p.fit_scope, "all_layers_all_tokens", "shared fit scope");
+    equal(p.components, 2, "shared axes");
+    equal(p.centering, "global_feature_mean", "shared centering");
+    equal(p.fit_sample_count, 13 * n, "fit sample count");
+    equal(p.domain_padding_fraction, 0.08, "fixed padding");
+    const ratios = array(p.explained_variance_ratio, 2, "shared variance");
+    if (
+      num(ratios[0], "PC1 variance", 0, 1) +
+        num(ratios[1], "PC2 variance", 0, 1) >
+      1 + 1e-6
+    )
+      fail("shared variance sum");
+    const domains = array(p.axis_domain, 2, "shared domains").map((axis) => {
+      const pair = array(axis, 2, "axis range");
+      const low = num(pair[0], "axis minimum"),
+        high = num(pair[1], "axis maximum");
+      if (low >= high) fail("shared axis domain");
+      return [low, high];
+    });
+    const extrema = [
+      [Infinity, -Infinity],
+      [Infinity, -Infinity],
+    ];
+    const center = [0, 0];
+    array(p.coordinates, 13, "shared layers").forEach((row) =>
+      array(row, n, "shared tokens").forEach((point) =>
+        array(point, 2, "shared coordinate").forEach((v, i) => {
+          const x = num(v, "shared coordinate", domains[i][0], domains[i][1]);
+          extrema[i][0] = Math.min(extrema[i][0], x);
+          extrema[i][1] = Math.max(extrema[i][1], x);
+          center[i] += x;
+        }),
+      ),
+    );
+    domains.forEach((domain, i) => {
+      const span = extrema[i][1] - extrema[i][0],
+        pad = span > 0 ? span * 0.08 : 0.5;
+      if (
+        Math.abs(domain[0] - (extrema[i][0] - pad)) > 1e-7 ||
+        Math.abs(domain[1] - (extrema[i][1] + pad)) > 1e-7
+      )
+        fail("shared fixed global domain");
+      if (Math.abs(center[i] / (13 * n)) > 1e-7)
+        fail("shared global centering");
+    });
+    const cross = array(
+        a.same_token_layer_similarity,
+        n,
+        "cross-layer token count",
+      ),
+      dist = array(a.same_token_layer_distance, n, "cross-layer distances");
+    cross.forEach((item, token) => {
+      matrix(item, 13, "cross-layer cosine", -1, 1);
+      matrix(dist[token], 13, "cross-layer distance", 0);
+      const c = item as number[][],
+        d = dist[token] as number[][],
+        magnitudes = a.representation_magnitude as number[][],
+        delta = a.representation_delta as (number | null)[][];
+      for (let i = 0; i < 13; i++) {
+        if (
+          Math.abs(c[i][i] - (magnitudes[i][token] > 1e-12 ? 1 : 0)) > 1e-5 ||
+          d[i][i] !== 0
+        )
+          fail("cross-layer diagonal");
+        for (let j = 0; j < 13; j++)
+          if (
+            Math.abs(c[i][j] - c[j][i]) > 1e-6 ||
+            Math.abs(d[i][j] - d[j][i]) > 1e-6
+          )
+            fail("cross-layer symmetry");
+        if (
+          i > 0 &&
+          Math.abs(d[i - 1][i] - delta[i][token]!) >
+            Math.max(1e-5, Math.abs(delta[i][token]!) * 1e-5)
+        )
+          fail("cross-layer consecutive change");
+      }
+    });
+  }
   return value as AnalysisResult;
 }

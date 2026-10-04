@@ -1,0 +1,446 @@
+.microscope-modes {
+  display: flex;
+  gap: 5px;
+  padding: 12px 20px 0;
+}
+.microscope-modes button {
+  padding: 9px 18px;
+  font-size: 10px;
+  letter-spacing: 1.2px;
+  min-width: 110px;
+  border-color: transparent;
+}
+.microscope-modes button.active {
+  border-color: #3e747a;
+}
+.core-panel > .panel-heading {
+  padding-top: 12px;
+}
+.core-panel > .panel-heading > button {
+  padding: 8px 12px;
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+.core-empty {
+  display: grid;
+  place-items: center;
+  flex: 1;
+  color: #8496a9;
+}
+.core-workspace .view-area {
+  overflow: hidden;
+}
+.similarity-matrix {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding-bottom: 44px;
+}
+.similarity-readout {
+  font-size: 10px;
+  gap: 12px;
+}
+.signed-legend i:first-of-type {
+  background: linear-gradient(90deg, #a39adb, #0f1923);
+}
+.signed-legend i:last-of-type {
+  background: linear-gradient(90deg, #0f1923, #74ddd9);
+}
+.graph-surface,
+.space-surface {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.graph-surface svg,
+.space-surface svg {
+  height: 100%;
+  width: 100%;
+  min-height: 0;
+  flex: 1;
+  font:
+    10px Consolas,
+    monospace;
+}
+.graph-surface svg [role="button"],
+.space-surface svg [role="button"] {
+  cursor: pointer;
+}
+.graph-surface svg [role="button"]:focus-visible,
+.space-surface svg [role="button"]:focus-visible {
+  outline: 1px solid #d8af72;
+}
+.graph-note {
+  font-size: 10px;
+  color: #8496a9;
+  text-align: center;
+  padding: 9px;
+}
+.space-surface {
+  padding: 12px 16px 0;
+}
+.space-accessible {
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+  font-size: 10px;
+  color: #8496a9;
+  flex-shrink: 0;
+  position: relative;
+  padding: 4px 10px 8px;
+}
+.space-accessible label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.space-accessible select,
+.compare-controls select,
+.profile-choice select {
+  font:
+    11px Consolas,
+    monospace;
+  background: #0e161f;
+  border: 1px solid #304354;
+  padding: 5px;
+  border-radius: 4px;
+  color: #c8d8e3;
+}
+.space-accessible summary {
+  cursor: pointer;
+  padding: 6px;
+}
+.space-accessible details[open] {
+  position: absolute;
+  bottom: 5px;
+  right: 0;
+  width: 450px;
+  max-height: 220px;
+  overflow: auto;
+  z-index: 3;
+  background: #101923;
+  border: 1px solid #3c596c;
+  border-radius: 4px;
+  padding: 10px;
+}
+.space-accessible ol {
+  padding-left: 20px;
+  font:
+    11px/1.9 Consolas,
+    monospace;
+}
+.trail-disclaimer {
+  font-size: 9px;
+  letter-spacing: 0.3px;
+  color: #a79671;
+  padding: 6px 10px 10px;
+  text-align: center;
+}
+.trail-disclaimer span {
+  display: block;
+  margin-top: 5px;
+  font-family: Consolas, monospace;
+}
+.layer-scrubber {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.layer-scrubber input {
+  width: 160px;
+  accent-color: #74ddd9;
+}
+.core-inspector {
+  position: relative;
+  overflow-y: auto;
+}
+.core-inspector > * {
+  flex-shrink: 0;
+}
+.core-inspector .token-details {
+  margin-bottom: 8px;
+}
+.core-inspector .metric {
+  padding: 12px 0;
+}
+.core-inspector .metric strong {
+  font-size: 20px;
+}
+.relationship-ranking {
+  list-style: none;
+  padding: 0;
+  margin: 5px 0;
+  max-height: 170px;
+  overflow: auto;
+  scrollbar-width: thin;
+}
+.relationship-ranking li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border-bottom: 1px solid #22303e;
+  padding: 6px 0;
+  font:
+    11px Consolas,
+    monospace;
+}
+.relationship-ranking button {
+  border: 0;
+  text-align: left;
+  padding: 3px 0;
+  color: #a9bccb;
+}
+.relationship-ranking strong {
+  font-weight: 400;
+}
+.self-note {
+  font-size: 9px;
+  color: #607b8e;
+  margin: 8px 0;
+}
+.space-coordinate {
+  border-top: 1px solid #22303e;
+  padding-top: 12px;
+  font-size: 10px;
+  color: #8496a9;
+}
+.space-coordinate p {
+  font:
+    11px/1.8 Consolas,
+    monospace;
+  color: #d8af72;
+}
+.profiles {
+  position: relative;
+  border-top: 1px solid #22303e;
+  margin-top: 12px;
+  padding-top: 12px;
+}
+.profiles > .section-label {
+  font-size: 8px;
+  letter-spacing: 1px;
+}
+.profiles svg {
+  width: 100%;
+  height: 55px;
+  display: block;
+}
+.delta-strip {
+  height: 45px;
+  display: flex;
+  gap: 5px;
+  align-items: end;
+  padding: 6px 0;
+}
+.delta-strip button {
+  background: #a39adb80;
+  border: 0;
+  flex: 1;
+  min-width: 4px;
+  border-radius: 1px;
+}
+.delta-strip button:hover,
+.delta-strip button:focus-visible {
+  background: #a39adb;
+}
+.profile-choice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 9px;
+  color: #8496a9;
+  margin-top: 7px;
+}
+.profile-readout {
+  font:
+    9px/1.7 Consolas,
+    monospace;
+  color: #a9bccb;
+  margin: 8px 0 2px;
+}
+.attention-inspector-stack {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #22303e;
+  border-radius: 5px;
+  background: #101923;
+  overflow: auto;
+  scrollbar-width: thin;
+  min-height: 0;
+}
+.attention-inspector-stack .inspector {
+  border: 0;
+  overflow: visible;
+  flex: 1;
+}
+.attention-profiles {
+  padding: 0 18px 12px;
+}
+.attention-profiles .profiles {
+  margin-top: 0;
+}
+.compare-controls {
+  display: flex;
+  gap: 14px;
+}
+.compare-controls label {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 9px;
+  color: #8496a9;
+  letter-spacing: 1px;
+}
+.compare-surface {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding: 15px 18px 10px;
+  min-height: 0;
+}
+.compare-metrics {
+  display: flex;
+  gap: 40px;
+  justify-content: space-between;
+  border-bottom: 1px solid #22303e;
+  padding: 0 8px 12px;
+  flex-shrink: 0;
+}
+.compare-metrics span {
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: #8496a9;
+}
+.compare-metrics strong {
+  display: block;
+  font:
+    18px Consolas,
+    monospace;
+  color: #74ddd9;
+  margin: 8px 0;
+}
+.compare-metrics small {
+  font:
+    10px Consolas,
+    monospace;
+  color: #a39adb;
+}
+.compare-surface .space-surface {
+  flex: 1;
+  min-height: 0;
+}
+.compare-coordinates {
+  font:
+    10px Consolas,
+    monospace;
+  color: #8496a9;
+  text-align: center;
+  padding: 8px;
+  flex-shrink: 0;
+}
+.evolution-table {
+  flex-shrink: 0;
+  font-size: 10px;
+  color: #8496a9;
+  position: relative;
+}
+.evolution-table summary {
+  cursor: pointer;
+  padding: 6px 8px;
+}
+.evolution-table[open] {
+  position: absolute;
+  bottom: 10px;
+  left: 15px;
+  right: 15px;
+  max-height: 85%;
+  overflow: auto;
+  background: #101923;
+  border: 1px solid #3c596c;
+  z-index: 3;
+  padding: 6px;
+}
+.evolution-table table {
+  width: 100%;
+  border-spacing: 2px;
+  font:
+    9px Consolas,
+    monospace;
+}
+.evolution-table th {
+  font-size: 9px;
+  font-weight: 400;
+  color: #a9bccb;
+}
+.evolution-table td {
+  padding: 5px;
+  color: #0b1118;
+  text-align: center;
+}
+@media (max-height: 850px) {
+  .microscope-modes {
+    padding: 8px 16px 0;
+  }
+  .microscope-modes button {
+    padding: 6px 12px;
+  }
+  .core-panel > .panel-heading {
+    padding-top: 9px;
+  }
+  .core-inspector .metric {
+    padding: 9px 0;
+  }
+  .core-inspector .metric strong {
+    font-size: 18px;
+  }
+  .profiles {
+    padding-top: 10px;
+  }
+  .compare-metrics {
+    gap: 18px;
+    padding-bottom: 8px;
+  }
+  .compare-metrics strong {
+    font-size: 14px;
+  }
+  .compare-metrics span {
+    font-size: 8px;
+  }
+  .graph-note,
+  .trail-disclaimer {
+    font-size: 8px;
+  }
+  .space-accessible {
+    padding-bottom: 3px;
+  }
+  .compare-coordinates {
+    font-size: 9px;
+  }
+  .core-inspector .inspector-note {
+    margin-top: 10px;
+  }
+}
+@media (max-width: 1450px) {
+  .microscope-modes button {
+    min-width: 90px;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  .core-panel .panel-heading h2 span {
+    font-size: 11px;
+  }
+  .similarity-readout {
+    gap: 6px;
+    font-size: 9px;
+  }
+}

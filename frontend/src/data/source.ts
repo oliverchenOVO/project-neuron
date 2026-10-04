@@ -10,6 +10,7 @@ export interface AnalysisDataSource {
   clear(id: FixtureId): void;
 }
 export class FixtureDataSource implements AnalysisDataSource {
+  constructor(private readonly basePath = "/fixtures") {}
   private cache = new Map<FixtureId, Promise<LoadedAnalysis>>();
   clear(id: FixtureId) {
     this.cache.delete(id);
@@ -26,7 +27,7 @@ export class FixtureDataSource implements AnalysisDataSource {
   }
   private async fetchFixture(id: FixtureId): Promise<LoadedAnalysis> {
     const start = performance.now();
-    const response = await fetch(`/fixtures/${id}.json`);
+    const response = await fetch(`${this.basePath}/${id}.json`);
     if (!response.ok)
       throw new Error(
         `FIXTURE UNAVAILABLE · HTTP ${response.status}. Generate the public fixtures with npm run fixtures.`,
@@ -56,3 +57,6 @@ export class FixtureDataSource implements AnalysisDataSource {
   }
 }
 export const fixtureSource = new FixtureDataSource();
+export const legacyFixtureSource = new FixtureDataSource(
+  "/fixtures/legacy-0.1.1",
+);

@@ -11,6 +11,7 @@
     "test:e2e": "playwright test",
     "test:visual:update": "playwright test --update-snapshots",
     "benchmark": "node scripts/benchmark.mjs",
+    "benchmark:core": "node scripts/benchmark-core.mjs",
     "fixtures": "node scripts/generate-fixtures.mjs"
   },
   "dependencies": {

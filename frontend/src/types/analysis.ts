@@ -22,7 +22,7 @@ export interface RepresentationMetrics {
 export interface ModelMetadata {
   model: "openai-community/gpt2";
   model_revision: string;
-  analysis_version: "0.1.1";
+  analysis_version: "0.1.1" | "0.2.0";
   device: "cpu" | "cuda";
   parameter_count: number;
   attention_implementation: "eager";
@@ -44,11 +44,11 @@ export interface FixtureProvenance {
   public_prompt: string;
   generator_version: string;
   model_revision: string;
-  analysis_schema_version: "0.1.1";
+  analysis_schema_version: "0.1.1" | "0.2.0";
   numerical_transformation: string;
   provenance: string;
 }
-export interface AnalysisResult extends RepresentationMetrics {
+interface BaseAnalysisResult extends RepresentationMetrics {
   metadata: ModelMetadata;
   fixture: FixtureProvenance;
   tokens: TokenInfo[];
@@ -70,6 +70,31 @@ export interface AnalysisResult extends RepresentationMetrics {
   final_top_k: PredictionEntry[];
   logit_lens_top_k: LogitLensLayer[];
 }
+export interface SharedPCA {
+  projection_type: "global_pca";
+  fit_scope: "all_layers_all_tokens";
+  components: 2;
+  centering: "global_feature_mean";
+  fit_sample_count: number;
+  domain_padding_fraction: 0.08;
+  explained_variance_ratio: [number, number];
+  axis_domain: [[number, number], [number, number]];
+  coordinates: PCAProjection[];
+}
+export interface LegacyAnalysisResult extends BaseAnalysisResult {
+  metadata: ModelMetadata & { analysis_version: "0.1.1" };
+}
+export interface CoreAnalysisResult extends BaseAnalysisResult {
+  metadata: ModelMetadata & { analysis_version: "0.2.0" };
+  shared_pca: SharedPCA;
+  same_token_layer_similarity: number[][][];
+  same_token_layer_distance: number[][][];
+}
+export type AnalysisResult = LegacyAnalysisResult | CoreAnalysisResult;
+export function isCoreAnalysis(a: AnalysisResult): a is CoreAnalysisResult {
+  return a.metadata.analysis_version === "0.2.0";
+}
+export type MicroscopeMode = "ATTENTION" | "SIMILARITY" | "SPACE" | "COMPARE";
 export type FixtureId = "showcase" | "stress-64";
 export type HeadSelection = "AVG" | number;
 export type VisualizationMode = "HEATMAP" | "ARCS";
