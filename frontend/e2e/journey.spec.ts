@@ -94,5 +94,5 @@ test("recording intro starts with real tokenization and no preselected token",as
   await expect(page.getByRole("button",{name:"Token 2: sat",exact:true})).toHaveAttribute("aria-pressed","false");
   await expect(page.getByLabel("Fixture",{exact:true})).toBeHidden();
   await page.getByRole("button",{name:"Token 2: sat",exact:true}).click();
-  await expect(page.getByTestId("arc-node")).toHaveCount(6);
+  await expect(page.getByTestId("attention-arc")).toHaveCount(3);
 });
