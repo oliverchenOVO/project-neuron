@@ -7,8 +7,7 @@ const browser=await chromium.launch();
 const context=await browser.newContext({viewport:{width:1920,height:1080},deviceScaleFactor:1,reducedMotion:"no-preference",recordVideo:{dir:output,size:{width:1920,height:1080}}});
 const page=await context.newPage();const errors=[];page.on("pageerror",e=>errors.push(e.message));
 // The query preset is the same genuine instrument, with deterministic initial state.
-await page.goto(`${base}/?recording=1`);await page.getByTestId("journey-space").waitFor();
-await page.getByRole("button",{name:"CINEMATIC",exact:true}).click();await page.getByRole("button",{name:"ATTENTION",exact:true}).click();
+await page.goto(`${base}/?recording=1&intro=1`);await page.getByRole("button",{name:"Token 2: sat",exact:true}).waitFor();
 const start=performance.now();const timeline=[];
 async function at(seconds,label,action){const remaining=start+seconds*1000-performance.now();if(remaining>0)await page.waitForTimeout(remaining);await action();timeline.push({plannedSecond:seconds,actualSecond:(performance.now()-start)/1000,label})}
 await at(0,"PROJECT NEURON / full instrument",async()=>{});

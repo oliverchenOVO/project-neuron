@@ -3,7 +3,7 @@ import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { execFileSync } from "node:child_process";
 import os from "node:os";
 const summary=values=>{const a=[...values].sort((x,y)=>x-y);return {samples:a.length,medianMs:a[Math.floor(a.length/2)],p95Ms:a[Math.ceil(a.length*.95)-1],maxMs:a.at(-1)}};
-const b=await chromium.launch(); const p=await b.newPage({viewport:{width:1920,height:1080},reducedMotion:"reduce"});
+const b=await chromium.launch({args:["--enable-precise-memory-info"]}); const p=await b.newPage({viewport:{width:1920,height:1080},reducedMotion:"reduce"});
 const base=process.env.NEURON_URL??"http://127.0.0.1:4175";
 const errors=[];p.on("pageerror",e=>errors.push(e.message));p.on("console",m=>{if(m.type()==="error")errors.push(m.text())});
 const result={sourceRevision:execFileSync("git",["rev-parse","HEAD"],{encoding:"utf8"}).trim(),

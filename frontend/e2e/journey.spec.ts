@@ -40,7 +40,7 @@ test("Cinematic recording preset, provenance and full instrument hero",async({pa
   await page.screenshot({path:"../docs/screenshots/phase1b-journey-hero.png"});
   const dimensions=await page.locator(".journey-workspace").evaluate(e=>({client:e.clientHeight,scroll:e.scrollHeight}));
   expect(dimensions.scroll).toBeLessThanOrEqual(dimensions.client+1);
-  await page.getByRole("button",{name:"CINEMATIC",exact:true}).click();await expect(page.getByLabel("Fixture",{exact:true})).toBeVisible();
+  await page.getByRole("button",{name:"CINEMATIC",exact:true}).click();await expect(page.getByLabel("Fixture",{exact:true})).toBeHidden();
   expect(errors).toEqual([]);
 });
 test("Public Showcase sequences genuine stages without another fetch",async({page})=>{
@@ -71,6 +71,7 @@ test("Imported CLI-shaped JSON Journey, invalid import retains state and honest 
   await expect(page.getByRole("button",{name:"Journey stage L06",exact:true})).toHaveAttribute("aria-current","step");
   await page.getByRole("button",{name:"CINEMATIC",exact:true}).click();await expect(page.getByText("LOCAL ANALYSIS",{exact:true})).toBeVisible();await expect(page.getByText("SOURCE NOT VERIFIED",{exact:true})).toBeVisible();
   await expect(page).toHaveScreenshot("imported-journey.png");expect(errors).toEqual([]);
+  await page.getByRole("button",{name:"CINEMATIC",exact:true}).click();await expect(page.getByLabel("Fixture",{exact:true})).toBeVisible();
 });
 test("64-token Journey stress: full points, sparse labels, keyboard and reduced-motion playback",async({page})=>{
   await page.goto("/?fixture=stress-64");await page.getByRole("button",{name:/^Token 63:/}).click();await page.getByRole("button",{name:"JOURNEY",exact:true}).click();
@@ -87,4 +88,11 @@ test("normal motion and narrow viewport remain interactive",async({page})=>{
   const duration=await page.locator(".journey-point circle").first().evaluate(e=>getComputedStyle(e).transitionDuration);expect(duration).toContain("0.24s");
   await page.setViewportSize({width:390,height:844});await page.getByRole("button",{name:"Journey stage OUT",exact:true}).click();await expect(page.getByRole("heading",{name:/FINAL PREDICTION/})).toBeVisible();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+});
+test("recording intro starts with real tokenization and no preselected token",async({page})=>{
+  await page.goto("/?recording=1&intro=1");
+  await expect(page.getByRole("button",{name:"Token 2: sat",exact:true})).toHaveAttribute("aria-pressed","false");
+  await expect(page.getByLabel("Fixture",{exact:true})).toBeHidden();
+  await page.getByRole("button",{name:"Token 2: sat",exact:true}).click();
+  await expect(page.getByTestId("arc-node")).toHaveCount(6);
 });

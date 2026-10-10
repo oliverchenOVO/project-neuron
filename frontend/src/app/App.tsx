@@ -40,8 +40,9 @@ export function App() {
   useEffect(() => {
     if (recording && !recordingInitialized.current && !localFilename && status === "ready" && analysis && isJourneyAnalysis(analysis)) {
       recordingInitialized.current = true;
-      useMicroscope.setState({ selectedToken: fixtureId === "showcase" && !localFilename ? 2 : analysis.tokens.length - 1,
-        microscopeMode: "JOURNEY", journeyStage: 6, selectedHead: "AVG", cinematic: true, playing: false, showcaseStep: null, journeyTrail: true, fullTrail: false });
+      const intro = new URLSearchParams(location.search).get("intro") === "1";
+      useMicroscope.setState({ selectedToken: intro ? null : fixtureId === "showcase" && !localFilename ? 2 : analysis.tokens.length - 1,
+        microscopeMode: intro ? "ATTENTION" : "JOURNEY", journeyStage: intro ? 0 : 6, selectedHead: "AVG", cinematic: !intro, playing: false, showcaseStep: null, journeyTrail: true, fullTrail: false });
     }
   }, [analysis, recording]);
   useEffect(() => {

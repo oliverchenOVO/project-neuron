@@ -88,6 +88,7 @@
 .cinematic .prediction-evolution-content { grid-template-columns:minmax(0,1fr) 320px }
 .cinematic .app-footer { border:0; font-size:9px }
 .cinematic .journey-shortcuts { opacity:.5 }
+.recording .info-button,.recording .fixture-choice { display:none }
 .cinematic .journey-heading { min-height:76px }
 .cinematic .journey-space-svg { height:310px; max-height:310px }
 .cinematic .prediction-chart { height:160px }
