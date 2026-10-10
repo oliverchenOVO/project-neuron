@@ -4,7 +4,7 @@ import type { JourneyAnalysisResult } from "../types/analysis";
 import { useMicroscope } from "../state/microscope";
 import { beginInteraction, commitInteraction, markFirstRender } from "../data/performance";
 import { displayToken, getAttention, headLabel } from "../utils/attention";
-import { rankRelationships } from "../utils/representation";
+import { rankRelationships, projectedLabels } from "../utils/representation";
 import { HeadSelector, TokenStrip } from "./LegacyViews";
 
 export const stageName = (stage: number) => stage === 0 ? "EMB" : stage === 13 ? "OUT" : `L${String(stage).padStart(2, "0")}`;
@@ -37,6 +37,10 @@ export function JourneySpace({ analysis, token, stage }: { analysis: JourneyAnal
   const x = (v: number) => 65 + (v - d[0][0]) / (d[0][1] - d[0][0]) * 880;
   const y = (v: number) => 285 - (v - d[1][0]) / (d[1][1] - d[1][0]) * 250;
   const select = useMicroscope((s) => s.selectToken);
+  const hovered = useMicroscope((s) => s.hoveredToken);
+  const hover = useMicroscope((s) => s.hoverToken);
+  const visibleLabels = analysis.tokens.filter(t => t.position === token || t.position === hovered || t.position % Math.max(1,Math.ceil(analysis.tokens.length/6)) === 0).map(t=>t.position);
+  const labelPositions = projectedLabels(analysis.shared_pca.coordinates[layer].map(p=>({x:x(p[0]),y:y(p[1])})),visibleLabels,1000,330);
   const trace = analysis.shared_pca.coordinates.slice(0, full ? 13 : layer + 1).map((row) => row[token]);
   return <section className="journey-space">
     <div className="journey-subheading"><div><span className="section-label">SHARED-BASIS REPRESENTATION SPACE</span><h2>{stage === 13 ? "FINAL REPRESENTATION: L12" : `${stageName(stage)} · selected token`}</h2></div>
@@ -52,9 +56,9 @@ export function JourneySpace({ analysis, token, stage }: { analysis: JourneyAnal
       {analysis.tokens.map((t) => {
         const p = analysis.shared_pca.coordinates[layer][t.position], selected = token === t.position;
         return <g key={t.position} data-testid="journey-node" data-position={t.position} data-x={p[0]} data-y={p[1]} className={selected ? "journey-point selected" : "journey-point"} tabIndex={0}
-          role="button" aria-label={`Journey token ${t.position}: ${displayToken(t.text)}`} onClick={() => select(t.position, false)} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); select(t.position, false); } }}>
+          role="button" aria-label={`Journey token ${t.position}: ${displayToken(t.text)}`} onMouseEnter={()=>hover(t.position)} onMouseLeave={()=>hover(null)} onClick={() => select(t.position, false)} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); select(t.position, false); } }}>
           <circle cx={x(p[0])} cy={y(p[1])} r={selected ? 7 : 3} />
-          {(selected || t.position % Math.max(1, Math.ceil(analysis.tokens.length / 6)) === 0) && <text x={x(p[0]) + 11} y={y(p[1]) - 10}>{displayToken(t.text)} {selected ? "← SELECTED" : t.position}</text>}
+          {labelPositions.has(t.position) && <><line className="journey-label-leader" x1={x(p[0])+7} y1={y(p[1])} x2={labelPositions.get(t.position)!.x-3} y2={labelPositions.get(t.position)!.y-3}/><text x={labelPositions.get(t.position)!.x} y={labelPositions.get(t.position)!.y}>{displayToken(t.text)} {selected ? "← SELECTED" : t.position}</text></>}
           <title>{t.position}: {t.text} · PC1 {fixed(p[0])}, PC2 {fixed(p[1])}</title>
         </g>;
       })}
@@ -82,7 +86,7 @@ export function JourneySignals({ analysis, token, stage }: { analysis: JourneyAn
     <section><div className="journey-subheading"><h3>TOP ATTENTION · {headLabel(head)} · TOP 3</h3></div><HeadSelector disabled={stage === 0 || stage === 13} />
       {attention ? <ol className="journey-relationships">{attention.map(({ weight, i }) => <li key={i}><span>{i} · {displayToken(analysis.tokens[i].text)}</span><strong>{fixed(weight)}</strong></li>)}</ol>
         : <p data-testid="journey-attention-na" className="journey-na">{stage === 0 ? "ATTENTION NOT APPLICABLE" : "ATTENTION COMPLETE AT L12 · N/A AT OUT"}</p>}</section>
-    <section><h3>TOP HIDDEN-STATE SIMILARITIES</h3><small>Raw cosine descending · SELF = {fixed(analysis.hidden_similarity[layer][token][token])}</small>
+    <section><h3>TOP HIDDEN-STATE SIMILARITIES · TOP 3</h3><small>Raw cosine descending · SELF = {fixed(analysis.hidden_similarity[layer][token][token])}</small>
       <ol className="journey-relationships">{similar.map((r) => <li key={r.key}><span>{r.key} · {displayToken(analysis.tokens[r.key].text)}</span><strong>{fixed(r.value)}</strong></li>)}</ol></section>
   </aside>;
 }

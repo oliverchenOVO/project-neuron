@@ -20,7 +20,7 @@ test("similarity, graph, fixed axes, trail and compare heroes", async ({
   page.on("console", (m) => {
     if (m.type() === "error") errors.push(m.text());
   });
-  await page.goto("/");
+  await page.goto("/?core=1");
   await expect(page).toHaveTitle(/Project NEURON/);
   await expect(page.getByTestId("prediction")).toHaveCount(10);
   await page.getByRole("button", { name: "Token 2: sat", exact: true }).click();
@@ -96,7 +96,7 @@ test("similarity, graph, fixed axes, trail and compare heroes", async ({
 test("64-token similarity and space stress, accessible token selection", async ({
   page,
 }) => {
-  await page.goto("/?fixture=stress-64");
+  await page.goto("/?core=1&fixture=stress-64");
   await expect(page.getByTestId("prediction")).toHaveCount(10);
   await page
     .getByRole("button", { name: "Token 63: hello", exact: true })
@@ -129,7 +129,7 @@ for (const viewport of [
     page,
   }) => {
     await page.setViewportSize(viewport);
-    await page.goto("/");
+    await page.goto("/?core=1");
     await page.getByRole("button", { name: "Token 2: sat" }).click();
     await page.getByRole("button", { name: "SPACE", exact: true }).click();
     await page.getByRole("button", { name: "Layer 6", exact: true }).click();
@@ -152,7 +152,7 @@ test("normal motion interpolates with fixed axes; reduced-motion baseline remain
   page,
 }) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
-  await page.goto("/");
+  await page.goto("/?core=1");
   await page.getByRole("button", { name: "SPACE", exact: true }).click();
   const domain = await page
     .getByTestId("space-plot")

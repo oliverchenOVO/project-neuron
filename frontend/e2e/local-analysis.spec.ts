@@ -6,7 +6,7 @@ test("local import, four modes, failed replacement, recovery and refresh", async
   page.on("pageerror", (e) => errors.push(e.message));
   const uploads: string[] = [];
   page.on("request", (r) => { if (r.method() !== "GET") uploads.push(r.url()); });
-  await page.goto("/");
+  await page.goto("/?core=1");
   await expect(page.getByTestId("prediction")).toHaveCount(10);
   await page.getByLabel("Fixture", { exact: true }).selectOption("import");
   await expect(page.getByRole("dialog")).toBeVisible();

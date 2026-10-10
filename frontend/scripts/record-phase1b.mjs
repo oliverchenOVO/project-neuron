@@ -1,0 +1,33 @@
+import { chromium } from "@playwright/test";
+import { mkdir, writeFile } from "node:fs/promises";
+const base=process.env.NEURON_URL??"http://127.0.0.1:4175";
+const output=process.env.NEURON_RECORDING_DIR??"../artifacts/phase1b-recording";
+await mkdir(output,{recursive:true});
+const browser=await chromium.launch();
+const context=await browser.newContext({viewport:{width:1920,height:1080},deviceScaleFactor:1,reducedMotion:"no-preference",recordVideo:{dir:output,size:{width:1920,height:1080}}});
+const page=await context.newPage();const errors=[];page.on("pageerror",e=>errors.push(e.message));
+// The query preset is the same genuine instrument, with deterministic initial state.
+await page.goto(`${base}/?recording=1`);await page.getByTestId("journey-space").waitFor();
+await page.getByRole("button",{name:"CINEMATIC",exact:true}).click();await page.getByRole("button",{name:"ATTENTION",exact:true}).click();
+const start=performance.now();const timeline=[];
+async function at(seconds,label,action){const remaining=start+seconds*1000-performance.now();if(remaining>0)await page.waitForTimeout(remaining);await action();timeline.push({plannedSecond:seconds,actualSecond:(performance.now()-start)/1000,label})}
+await at(0,"PROJECT NEURON / full instrument",async()=>{});
+await at(3,"The cat sat on the mat",async()=>page.locator(".prompt-band").scrollIntoViewIfNeeded());
+await at(5,"Tokenization",async()=>page.getByRole("button",{name:"Token 2: sat",exact:true}).focus());
+await at(8,"Select sat",async()=>page.getByRole("button",{name:"Token 2: sat",exact:true}).click());
+await at(10,"Attention arcs",async()=>page.getByRole("button",{name:"ARCS",exact:true}).click());
+await at(14,"Layer 01",async()=>page.getByRole("button",{name:"Layer 1",exact:true}).click());
+await at(16,"Layer 06",async()=>page.getByRole("button",{name:"Layer 6",exact:true}).click());
+await at(18,"Layer 12",async()=>page.getByRole("button",{name:"Layer 12",exact:true}).click());
+await at(20,"Similarity",async()=>page.getByRole("button",{name:"SIMILARITY",exact:true}).click());
+await at(24,"Shared PCA Space",async()=>page.getByRole("button",{name:"SPACE",exact:true}).click());
+await at(28,"Representation trail",async()=>{const button=page.getByRole("button",{name:"TRAIL OFF",exact:true});if(await button.count())await button.click()});
+await at(33,"Journey EMB / cinematic",async()=>{await page.getByRole("button",{name:"JOURNEY",exact:true}).click();await page.getByRole("button",{name:"Reset",exact:true}).click();await page.getByRole("button",{name:"CINEMATIC",exact:true}).click()});
+await at(36,"Play EMB to L12",async()=>{await page.getByLabel("Playback speed").selectOption("1.5");await page.getByRole("button",{name:"Play",exact:true}).click()});
+await at(46,"Prediction Evolution",async()=>{await page.getByRole("button",{name:"Journey stage L12",exact:true}).click();await page.locator(".prediction-table summary").click()});
+await at(52,"OUT / final prediction",async()=>page.getByRole("button",{name:"Journey stage OUT",exact:true}).click());
+await at(57,"Full instrument",async()=>{await page.locator(".prediction-table summary").click();await page.locator(".journey-workspace").evaluate(e=>e.scrollTop=0)});
+await at(60,"PROJECT NEURON / real Transformer signals",async()=>page.screenshot({path:`${output}/final-instrument.png`}));
+const video=page.video();await context.close();const videoPath=await video.path();await browser.close();
+await writeFile(`${output}/recording.json`,JSON.stringify({viewport:"1920x1080",data:"public pinned real GPT-2 fixture",video:videoPath,timeline,errors,note:"60s instrument sequence begins after loading; WebM also contains setup footage. No composited title cards or fake data."},null,2));
+console.log(videoPath);if(errors.length)throw Error(errors.join("\n"));

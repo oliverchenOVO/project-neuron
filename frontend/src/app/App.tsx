@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { useMicroscope } from "../state/microscope";
 import { Ready, Information } from "./LegacyViews";
@@ -26,6 +26,7 @@ export function App() {
   const legacy = new URLSearchParams(location.search).get("legacy") === "1";
   const core = new URLSearchParams(location.search).get("core") === "1";
   const recording = new URLSearchParams(location.search).get("recording") === "1";
+  const recordingInitialized = useRef(false);
   const source = legacy ? legacyFixtureSource : core ? coreFixtureSource : fixtureSource;
   usePlayback();
   useEffect(() => {
@@ -37,7 +38,8 @@ export function App() {
     );
   }, [load]);
   useEffect(() => {
-    if (recording && status === "ready" && analysis && isJourneyAnalysis(analysis)) {
+    if (recording && !recordingInitialized.current && !localFilename && status === "ready" && analysis && isJourneyAnalysis(analysis)) {
+      recordingInitialized.current = true;
       useMicroscope.setState({ selectedToken: fixtureId === "showcase" && !localFilename ? 2 : analysis.tokens.length - 1,
         microscopeMode: "JOURNEY", journeyStage: 6, selectedHead: "AVG", cinematic: true, playing: false, showcaseStep: null, journeyTrail: true, fullTrail: false });
     }

@@ -25,6 +25,7 @@ export function usePlayback() {
       const s = useMicroscope.getState();
       if (e.key === "Escape") { s.stopPlayback(); s.setCinematic(false); return; }
       if (s.microscopeMode !== "JOURNEY") return;
+      if (s.selectedToken === null) return;
       if (e.key === "ArrowLeft") s.stepJourney(-1);
       else if (e.key === "ArrowRight") s.stepJourney(1);
       else if (e.key === "Home") s.resetJourney();

@@ -36,6 +36,7 @@
 .journey-point.selected circle { fill:#76ded5; opacity:1; stroke:#182e36; stroke-width:5px; paint-order:stroke }
 .journey-point.selected text { fill:#dff7f3; font-size:13px }
 .journey-point:focus-visible circle { stroke:#dbb576; stroke-width:3px }
+.journey-label-leader { stroke:#425965; stroke-width:.5; opacity:.6 }
 .journey-space-note { font:10px Consolas,monospace; color:#c6d8e1; margin-top:9px }
 .journey-disclaimer { font-size:10px; line-height:1.6; color:#8196a7; margin:8px 0 0 }
 .journey-signals { min-width:0; padding:5px 0 }
@@ -77,6 +78,7 @@
 .cinematic .brand-symbol { width:28px; height:28px; font-size:19px }
 .cinematic .brand small,.cinematic .fixture-choice,.cinematic .info-button,.cinematic .showcase-control { display:none }
 .cinematic .tokens-band { display:none }
+.cinematic .journey-workspace:has(.journey-empty) .tokens-band { display:block }
 .cinematic .journey-workspace { padding-top:12px; gap:12px }
 .cinematic .journey-heading h1 { font-size:28px }
 .cinematic .journey-heading .microscope-modes { display:none }

@@ -52,7 +52,7 @@ export function parseLocalAnalysis(raw: string): CoreAnalysisResult {
     },
   }, { local: true });
   if (!isCoreAnalysis(analysis))
-    throw new Error("需要 schema 0.2.0。請使用目前版本的 engine.cli 重新分析。");
+    throw new Error("需要 schema 0.2.0 或 0.3.0。請使用目前版本的 engine.cli 重新分析。");
   return analysis;
 }
 
