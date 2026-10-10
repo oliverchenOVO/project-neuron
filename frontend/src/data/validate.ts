@@ -98,7 +98,7 @@ export function validateAnalysis(value: unknown, options: { local?: boolean } = 
   const version = (
     value as { metadata?: { analysis_version?: unknown } } | null
   )?.metadata?.analysis_version;
-  if (version !== "0.1.1" && version !== "0.2.0") fail("schema version");
+  if (version !== "0.1.1" && version !== "0.2.0" && version !== "0.3.0") fail("schema version");
   const a = object(value, "analysis", [
     "metadata",
     "fixture",
@@ -115,13 +115,14 @@ export function validateAnalysis(value: unknown, options: { local?: boolean } = 
     "attention_matrices",
     "final_top_k",
     "logit_lens_top_k",
-    ...(version === "0.2.0"
+    ...(version !== "0.1.1"
       ? [
           "shared_pca",
           "same_token_layer_similarity",
           "same_token_layer_distance",
         ]
       : []),
+    ...(version === "0.3.0" ? ["prediction_evolution"] : []),
   ]);
   const m = object(a.metadata, "metadata", [
     "model",
@@ -278,7 +279,7 @@ export function validateAnalysis(value: unknown, options: { local?: boolean } = 
   array(a.logit_lens_top_k, 13, "lens layers").forEach((v) =>
     predictions(v, "lens predictions"),
   );
-  if (version === "0.2.0") {
+  if (version !== "0.1.1") {
     const p = object(a.shared_pca, "shared PCA", [
       "projection_type",
       "fit_scope",
@@ -369,6 +370,43 @@ export function validateAnalysis(value: unknown, options: { local?: boolean } = 
           fail("cross-layer consecutive change");
       }
     });
+  }
+  if (version === "0.3.0") {
+    const e = object(a.prediction_evolution, "prediction evolution", ["position", "stages", "probability_basis", "projection", "candidates"]);
+    equal(e.position, n - 1, "evolution position is last input");
+    equal(e.probability_basis, "full_vocabulary_softmax_float64", "evolution normalization");
+    equal(e.projection, "raw_residual -> final_ln_f -> lm_head; OUT = forward logits", "evolution projection");
+    const labels = ["EMB", ...Array.from({ length: 12 }, (_, i) => `L${String(i + 1).padStart(2, "0")}`), "OUT"];
+    array(e.stages, 14, "evolution stages").forEach((s, i) => equal(s, labels[i], "evolution stage label"));
+    const finals = a.final_top_k as { token_id: number; token: string; probability: number; logit: number }[];
+    array(e.candidates, 5, "fixed candidates").forEach((v, i) => {
+      const c = object(v, "candidate", ["token_id", "token", "logits", "probabilities"]);
+      equal(c.token_id, finals[i].token_id, "candidate final rank");
+      equal(c.token, finals[i].token, "candidate text");
+      const logits = array(c.logits, 14, "candidate logits"), probabilities = array(c.probabilities, 14, "candidate probabilities");
+      logits.forEach((x) => num(x, "candidate logit"));
+      probabilities.forEach((x) => num(x, "candidate probability", 0, 1));
+      equal(logits[13], finals[i].logit, "OUT logit");
+      equal(probabilities[13], finals[i].probability, "OUT probability");
+      const lens = a.logit_lens_top_k as { token_id: number; probability: number; logit: number }[][];
+      for (let stage = 0; stage < 13; stage++) {
+        const ranked = lens[stage].find((p) => p.token_id === c.token_id);
+        if (ranked) {
+          equal(logits[stage], ranked.logit, "candidate/lens logit mismatch");
+          equal(probabilities[stage], ranked.probability, "candidate/lens probability mismatch");
+        } else if ((probabilities[stage] as number) > lens[stage].at(-1)!.probability + 1e-12) fail("missing candidate exceeds top-k floor");
+      }
+    });
+    for (let stage = 0; stage < 14; stage++) {
+      const cs = e.candidates as { logits: number[]; probabilities: number[] }[];
+      if (cs.reduce((total, c) => total + c.probabilities[stage], 0) > 1 + 1e-6) fail("candidate probability sum");
+      // All probabilities at a stage share the same full-vocabulary denominator.
+      const positive = cs.filter((c) => c.probabilities[stage] > 0);
+      if (positive.length) {
+        const logZ = positive[0].logits[stage] - Math.log(positive[0].probabilities[stage]);
+        if (positive.some((c) => Math.abs(c.logits[stage] - Math.log(c.probabilities[stage]) - logZ) > 1e-8)) fail("candidate normalization inconsistent");
+      }
+    }
   }
   return value as AnalysisResult;
 }

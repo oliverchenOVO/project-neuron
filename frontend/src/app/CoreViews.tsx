@@ -8,6 +8,7 @@ import {
 } from "react";
 import { useShallow } from "zustand/react/shallow";
 import type { CoreAnalysisResult } from "../types/analysis";
+import { isJourneyAnalysis } from "../types/analysis";
 import { useMicroscope } from "../state/microscope";
 import {
   commitInteraction,
@@ -1046,7 +1047,7 @@ export function CoreReady({ analysis }: { analysis: CoreAnalysisResult }) {
         <LayerRail allowEmbedding={mode !== "ATTENTION"} />
         <section className="attention-panel core-panel">
           <nav className="microscope-modes" aria-label="Microscope modes">
-            {(["ATTENTION", "SIMILARITY", "SPACE", "COMPARE"] as const).map(
+            {(["ATTENTION", "SIMILARITY", "SPACE", "COMPARE", ...(isJourneyAnalysis(analysis) ? ["JOURNEY" as const] : [])] as const).map(
               (m) => (
                 <button
                   key={m}
@@ -1242,8 +1243,7 @@ export function CoreInformation({ close }: { close: () => void }) {
       </p>
       <p>
         Final prediction uses full-vocabulary softmax; top-10 is not
-        renormalized. Logit Lens remains last-input-position diagnostic data
-        with no visualization here.
+          renormalized. Intermediate Logit Lens values are diagnostic projections through the model's final normalization and LM head. They are not the model's literal intermediate decision process. JOURNEY keeps next-token diagnostics at the last input position, separate from the selected representation token. OUT uses genuine final logits and reuses the L12 representation; it is not Layer 13.
       </p>
       <p className="revision">
         GPT-2 · 607a30d783dfa663caf39e06633721c8d4cfcd7e

@@ -56,7 +56,8 @@ export class FixtureDataSource implements AnalysisDataSource {
     };
   }
 }
-export const fixtureSource = new FixtureDataSource();
+export const fixtureSource = new FixtureDataSource("/fixtures/phase1b");
+export const coreFixtureSource = new FixtureDataSource();
 export const legacyFixtureSource = new FixtureDataSource(
   "/fixtures/legacy-0.1.1",
 );

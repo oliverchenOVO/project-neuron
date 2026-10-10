@@ -3,7 +3,7 @@ import { isCoreAnalysis, type CoreAnalysisResult } from "../types/analysis";
 
 export const MAX_LOCAL_BYTES = 32 * 1024 * 1024;
 export const LOCAL_NOTICE = "LOCAL ANALYSIS · FILE SOURCE NOT VERIFIED";
-const runtimeFields = ["model_source", "cache_hit", "forward_ms", "analysis_ms", "request_ms", "new_metrics_ms"];
+const runtimeFields = ["model_source", "cache_hit", "forward_ms", "analysis_ms", "request_ms", "new_metrics_ms", "prediction_evolution_ms"];
 
 /** Adapt engine CLI output without changing any model-derived numeric arrays. */
 export function parseLocalAnalysis(raw: string): CoreAnalysisResult {

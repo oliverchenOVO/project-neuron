@@ -22,7 +22,7 @@ export interface RepresentationMetrics {
 export interface ModelMetadata {
   model: "openai-community/gpt2";
   model_revision: string;
-  analysis_version: "0.1.1" | "0.2.0";
+  analysis_version: "0.1.1" | "0.2.0" | "0.3.0";
   device: "cpu" | "cuda";
   parameter_count: number;
   attention_implementation: "eager";
@@ -44,7 +44,7 @@ export interface FixtureProvenance {
   public_prompt: string;
   generator_version: string;
   model_revision: string;
-  analysis_schema_version: "0.1.1" | "0.2.0";
+  analysis_schema_version: "0.1.1" | "0.2.0" | "0.3.0";
   numerical_transformation: string;
   provenance: string;
 }
@@ -85,16 +85,30 @@ export interface LegacyAnalysisResult extends BaseAnalysisResult {
   metadata: ModelMetadata & { analysis_version: "0.1.1" };
 }
 export interface CoreAnalysisResult extends BaseAnalysisResult {
-  metadata: ModelMetadata & { analysis_version: "0.2.0" };
+  metadata: ModelMetadata & { analysis_version: "0.2.0" | "0.3.0" };
   shared_pca: SharedPCA;
   same_token_layer_similarity: number[][][];
   same_token_layer_distance: number[][][];
 }
-export type AnalysisResult = LegacyAnalysisResult | CoreAnalysisResult;
-export function isCoreAnalysis(a: AnalysisResult): a is CoreAnalysisResult {
-  return a.metadata.analysis_version === "0.2.0";
+export interface PredictionEvolution {
+  position: number;
+  stages: string[];
+  probability_basis: "full_vocabulary_softmax_float64";
+  projection: string;
+  candidates: { token_id: number; token: string; logits: number[]; probabilities: number[] }[];
 }
-export type MicroscopeMode = "ATTENTION" | "SIMILARITY" | "SPACE" | "COMPARE";
+export interface JourneyAnalysisResult extends CoreAnalysisResult {
+  metadata: ModelMetadata & { analysis_version: "0.3.0" };
+  prediction_evolution: PredictionEvolution;
+}
+export type AnalysisResult = LegacyAnalysisResult | CoreAnalysisResult | JourneyAnalysisResult;
+export function isCoreAnalysis(a: AnalysisResult): a is CoreAnalysisResult {
+  return a.metadata.analysis_version === "0.2.0" || a.metadata.analysis_version === "0.3.0";
+}
+export function isJourneyAnalysis(a: AnalysisResult): a is JourneyAnalysisResult {
+  return a.metadata.analysis_version === "0.3.0";
+}
+export type MicroscopeMode = "ATTENTION" | "SIMILARITY" | "SPACE" | "COMPARE" | "JOURNEY";
 export type FixtureId = "showcase" | "stress-64";
 export type HeadSelection = "AVG" | number;
 export type VisualizationMode = "HEATMAP" | "ARCS";
