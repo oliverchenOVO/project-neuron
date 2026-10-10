@@ -9,11 +9,21 @@
 [![模型與引擎驗證](https://github.com/oliverchenOVO/project-neuron/actions/workflows/phase0.yml/badge.svg)](https://github.com/oliverchenOVO/project-neuron/actions/workflows/phase0.yml)
 [![瀏覽器驗證](https://github.com/oliverchenOVO/project-neuron/actions/workflows/phase0-5.yml/badge.svg)](https://github.com/oliverchenOVO/project-neuron/actions/workflows/phase0-5.yml)
 
-[功能展示](#功能展示) · [系統架構](#系統架構) · [方法與研究切入點](#方法與研究切入點) · [實驗與驗證](#實驗與驗證) · [本機執行](#本機執行) · [開發歷程](#開發歷程)
+[三分鐘導覽](#三分鐘審閱導覽) · [功能展示](#功能展示) · [系統架構](#系統架構) · [方法與研究切入點](#方法與研究切入點) · [實驗與驗證](#實驗與驗證) · [本機執行](#本機執行) · [開發歷程](#開發歷程)
 
 ![神經網路顯微鏡：sat 在第六層的共享 PCA 座標與跨層軌跡](docs/screenshots/phase1a-trail-hero.png)
 
 > 真實程式截圖，1920 × 1080。輸入為 `The cat sat on the mat`，選取 `sat`、SPACE 模式、第 06 層，並開啟 TRAIL。軌跡連接同一個 token 從 EMB 到 L12 的投影位置。
+
+## 三分鐘審閱導覽
+
+| 時間 | 觀察重點 | 可直接查看的證據 |
+|---|---|---|
+| 第 1 分鐘 | 先看 SPACE 主圖，再比較 Attention 與 Similarity；理解三者分析的是不同訊號 | [功能展示](#功能展示)、[架構圖](#系統架構) |
+| 第 2 分鐘 | 以同一 token 的 L03 → L09 為例，區分向量範數差、高維距離與二維位移 | [中文分析案例](docs/REVIEWER_GUIDE.zh-TW.md#sat-layer-comparison) |
+| 第 3 分鐘 | 核對資料來源、測試、效能定義與原始提交，而不只看介面截圖 | [驗證報告](docs/PHASE1A_VALIDATION.md)、[完整歷史](https://github.com/oliverchenOVO/project-neuron/commits/main/) |
+
+不必安裝即可閱讀上述圖文；要操作介面可使用已提交的公開資料，不必先下載模型。[審閱指南](docs/REVIEWER_GUIDE.zh-TW.md)整理技術問題與證據的對應，[重現指南](docs/REPRODUCIBILITY.zh-TW.md)則分開說明兩種執行路徑。
 
 ## 為什麼做這個專案？
 
@@ -137,6 +147,8 @@ Transformers 回傳的最後 hidden state 已經經過 `ln_f`。引擎透過暫�
 
 ## 本機執行
 
+詳細環境、操作步驟、離線範圍與常見問題見 [中文重現指南](docs/REPRODUCIBILITY.zh-TW.md)。以下為快速入口。
+
 ### 只看瀏覽器展示
 
 需要 Node.js；CI 使用 Node 22。Git 內已包含固定公開展示資料，不需要先下載模型。
@@ -222,6 +234,8 @@ npm run benchmark:core
 
 - [GPT-2 官方模型卡](https://huggingface.co/openai-community/gpt2)
 - [本專案使用的 GPT-2 implementation](https://github.com/huggingface/transformers/blob/v4.57.6/src/transformers/models/gpt2/modeling_gpt2.py)
+- [中文審閱指南與實際跨層案例](docs/REVIEWER_GUIDE.zh-TW.md)
+- [中文重現指南與常見問題](docs/REPRODUCIBILITY.zh-TW.md)
 - [架構與指標定義](docs/ARCHITECTURE.md)
 - [原始專案規格](docs/PROJECT_SPEC.md)
 
