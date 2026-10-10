@@ -1,0 +1,21 @@
+{
+  "notice": "GENERATED FROM REAL GPT-2 OUTPUT \u2014 NOT MOCK DATA",
+  "model": "openai-community/gpt2",
+  "model_revision": "607a30d783dfa663caf39e06633721c8d4cfcd7e",
+  "analysis_schema_version": "0.3.0",
+  "generator_version": "1.2.0",
+  "files": [
+    {
+      "name": "showcase",
+      "bytes": 142694,
+      "sha256": "1d6d6a0fcd1501bd57cfff93958cba3fdb5008393e447e45c070db858eaea220",
+      "tokens": 6
+    },
+    {
+      "name": "stress-64",
+      "bytes": 9046328,
+      "sha256": "4abdb6d59b43f36b265c534d43037bb2bb0a1b742f64f12d27326ed5dc42c488",
+      "tokens": 64
+    }
+  ]
+}

@@ -85,7 +85,7 @@ def test_cross_layer_zero_convention():
 
 
 def test_core_schema_export(analysis):
-    assert analysis['metadata']['analysis_version'] == '0.2.0'
+    assert analysis['metadata']['analysis_version'] == '0.3.0'
     assert analysis['shared_pca']['projection_type'] == 'global_pca'
     assert analysis['shared_pca']['fit_scope'] == 'all_layers_all_tokens'
     assert analysis['shared_pca']['fit_sample_count'] == 78

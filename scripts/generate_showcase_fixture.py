@@ -14,7 +14,7 @@ from engine.config import MODEL_ID, MODEL_REVISION
 from engine.inference import AnalysisEngine
 from engine.model_loader import ModelLoader
 
-GENERATOR_VERSION = "1.1.0"
+GENERATOR_VERSION = "1.2.0"
 PROMPTS = {"showcase": "The cat sat on the mat", "stress-64": " hello" * 64}
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -28,7 +28,7 @@ def fixture_result(engine, name, timings=None):
     # These fields describe the generator machine/timing, not model-derived
     # values. Omit them from committed fixtures; tensors/metrics are untouched.
     metadata = {k:v for k,v in result["metadata"].items() if k not in
-                {"model_source", "cache_hit", "forward_ms", "analysis_ms", "request_ms", "new_metrics_ms"}}
+                {"model_source", "cache_hit", "forward_ms", "analysis_ms", "request_ms", "new_metrics_ms", "prediction_evolution_ms"}}
     result["metadata"] = metadata
     result["fixture"] = {"notice":"GENERATED FROM REAL GPT-2 OUTPUT — NOT MOCK DATA",
         "name":name,"public_prompt":PROMPTS[name],"generator_version":GENERATOR_VERSION,
@@ -45,7 +45,7 @@ def serialize(result):
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument("--model-dir",default=str(ROOT/"resources/models/gpt2"))
-    parser.add_argument("--output",default=str(ROOT/"frontend/public/fixtures"))
+    parser.add_argument("--output",default=str(ROOT/"frontend/public/fixtures/phase1b"))
     parser.add_argument("--verify-reproducibility",action="store_true")
     args=parser.parse_args()
     torch.set_num_threads(min(4,os.cpu_count() or 1))

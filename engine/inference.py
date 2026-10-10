@@ -9,7 +9,7 @@ from .attention_analysis import serialize_attention, validate_attention
 from .errors import EngineError
 from .hidden_state_analysis import magnitudes, changes
 from .model_loader import ModelLoader, MODEL_ID
-from .prediction import logit_lens, top_predictions
+from .prediction import lens_logits, prediction_evolution, top_predictions
 from .projection import pca_2d, fit_shared_pca
 from .similarity import cosine_matrix, same_token_layer_metrics
 from .tokenizer_analysis import MAX_TOKENS, tokenize
@@ -97,6 +97,12 @@ class AnalysisEngine:
         shared = fit_shared_pca(states).export()
         layer_cosine, layer_distance = same_token_layer_metrics(states)
         new_metrics_ms = (time.perf_counter() - metric_started) * 1000
+        prediction_started = time.perf_counter()
+        projected = lens_logits(model, states)
+        final_top_k = top_predictions(signals.logits[0, -1], tokenizer, top_k)
+        lens_top_k = [top_predictions(x, tokenizer, top_k) for x in projected]
+        evolution = prediction_evolution(projected, signals.logits[0, -1], final_top_k, len(signals.tokens) - 1)
+        prediction_evolution_ms = (time.perf_counter() - prediction_started) * 1000
         result = {
             "metadata": {"model": MODEL_ID, "model_revision": self.loader.revision,
                 "model_source": str(self.loader.model_dir) if self.loader.model_dir else "huggingface_cache",
@@ -111,7 +117,8 @@ class AnalysisEngine:
                 "logit_lens_position": len(signals.tokens) - 1,
                 "local_inference": True, "local_only_loading": self.loader.offline,
                 "torch_version": torch.__version__, "transformers_version": transformers.__version__,
-                "cache_hit": False, "forward_ms": forward_ms, "new_metrics_ms": new_metrics_ms},
+                "cache_hit": False, "forward_ms": forward_ms, "new_metrics_ms": new_metrics_ms,
+                "prediction_evolution_ms": prediction_evolution_ms},
             "tokens": signals.tokens,
             "token_ids": signals.input_ids[0].cpu().tolist(),
             "layer_count": model.config.n_layer,
@@ -132,8 +139,9 @@ class AnalysisEngine:
             "same_token_layer_similarity": layer_cosine,
             "same_token_layer_distance": layer_distance,
             "attention_matrices": serialize_attention(signals.attentions),
-            "final_top_k": top_predictions(signals.logits[0, -1], tokenizer, top_k),
-            "logit_lens_top_k": logit_lens(model, states, tokenizer, top_k),
+            "final_top_k": final_top_k,
+            "logit_lens_top_k": lens_top_k,
+            "prediction_evolution": evolution,
         }
         result["metadata"]["analysis_ms"] = (time.perf_counter() - started) * 1000
         result["metadata"]["request_ms"] = result["metadata"]["analysis_ms"]
