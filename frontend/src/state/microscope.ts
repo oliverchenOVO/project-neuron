@@ -7,6 +7,7 @@ import type {
   MicroscopeMode,
 } from "../types/analysis";
 import { fixtureSource, type AnalysisDataSource } from "../data/source";
+import { readLocalAnalysis } from "../data/local-analysis";
 import {
   beginInteraction,
   diagnostics,
@@ -15,6 +16,8 @@ import {
 interface MicroscopeState {
   analysis: AnalysisResult | null;
   fixtureId: FixtureId;
+  localFilename: string | null;
+  importLocal: (file: File, signal?: AbortSignal) => Promise<boolean>;
   status: "loading" | "ready" | "error";
   error: string | null;
   selectedLayer: number;
@@ -42,10 +45,12 @@ interface MicroscopeState {
   setMode: (mode: VisualizationMode) => void;
 }
 let request = 0;
+let localRequest = 0;
 let activeSource: AnalysisDataSource = fixtureSource;
 export const useMicroscope = create<MicroscopeState>((set, get) => ({
   analysis: null,
   fixtureId: "showcase",
+  localFilename: null,
   status: "loading",
   error: null,
   selectedLayer: 1,
@@ -63,7 +68,7 @@ export const useMicroscope = create<MicroscopeState>((set, get) => ({
   load: async (id, source = fixtureSource) => {
     activeSource = source;
     const ticket = ++request;
-    set({ fixtureId: id, status: "loading", error: null, analysis: null });
+    set({ fixtureId: id, localFilename: null, status: "loading", error: null, analysis: null });
     try {
       const result = await source.load(id);
       if (ticket !== request) return;
@@ -94,6 +99,23 @@ export const useMicroscope = create<MicroscopeState>((set, get) => ({
             error instanceof Error ? error.message : "ANALYSIS UNAVAILABLE",
           analysis: null,
         });
+    }
+  },
+  importLocal: async (file, signal) => {
+    const ticket = request;
+    const localTicket = ++localRequest;
+    try {
+      const analysis = await readLocalAnalysis(file);
+      if (ticket !== request || localTicket !== localRequest || signal?.aborted) return false;
+      ++request; // A successful import supersedes any pending fixture load.
+      set({ analysis, localFilename: file.name, status: "ready", error: null,
+        selectedLayer: 1, selectedHead: "AVG", selectedToken: null, hoveredToken: null,
+        visualizationMode: "HEATMAP", microscopeMode: "ATTENTION", similarityView: "MATRIX",
+        trail: false, compareFrom: 3, compareTo: 9, loadTimings: null, renderStarted: performance.now() });
+      return true;
+    } catch (e) {
+      if (ticket !== request || localTicket !== localRequest || signal?.aborted) return false;
+      throw e;
     }
   },
   retry: () => {

@@ -22,6 +22,9 @@ def main():
         sys.stdout.reconfigure(encoding="utf-8")
     try:
         result = AnalysisEngine(ModelLoader(args.model_dir, args.offline, args.device)).analyze(args.text)
+        # Individual BPE-token decoding can contain replacement characters for
+        # split UTF-8 bytes. Preserve the original prompt for browser imports.
+        result["input_text"] = args.text
         out = Path(args.output)
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(json.dumps(result, ensure_ascii=False, allow_nan=False, indent=2), encoding="utf-8")

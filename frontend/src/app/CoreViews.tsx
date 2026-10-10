@@ -1032,13 +1032,13 @@ export function CoreReady({ analysis }: { analysis: CoreAnalysisResult }) {
     <>
       <section className="prompt-band">
         <div>
-          <div className="section-label">INPUT / PUBLIC FIXTURE</div>
-          <h1>{analysis.fixture.public_prompt}</h1>
+          <div className="section-label">{analysis.fixture.name === "local-import" ? "INPUT / LOCAL FILE · SOURCE NOT VERIFIED" : "INPUT / PUBLIC FIXTURE"}</div>
+          <h1 title={analysis.fixture.public_prompt}>{analysis.fixture.public_prompt}</h1>
         </div>
         <div className="prompt-meta">
           <span>{analysis.tokens.length} TOKENS</span>
           <span>13 REPRESENTATION STATES</span>
-          <span>REAL GPT-2 OUTPUT</span>
+          <span>{analysis.fixture.name === "local-import" ? "SCHEMA VALIDATED" : "REAL GPT-2 OUTPUT"}</span>
         </div>
       </section>
       <TokenStrip analysis={analysis} />
@@ -1183,6 +1183,7 @@ export function CoreReady({ analysis }: { analysis: CoreAnalysisResult }) {
   );
 }
 export function CoreInformation({ close }: { close: () => void }) {
+  const localFilename = useMicroscope((s) => s.localFilename);
   const dialog = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     dialog.current!.showModal();
@@ -1197,9 +1198,11 @@ export function CoreInformation({ close }: { close: () => void }) {
         </button>
       </div>
       <p>
+        {localFilename ? "LOCAL ANALYSIS · 使用者選擇的本機 JSON。數值與格式已檢查，但檔案來源、模型權重與推論真實性未經獨立驗證。檔案不會上傳或持久儲存。" : <>
         GENERATED FROM REAL GPT-2 OUTPUT — NOT MOCK DATA. SHOWCASE FIXTURE /
         REAL FORWARD PASS. These are previously computed offline results, not
         browser inference.
+        </>}
       </p>
       <p>
         ATTENTION · Attention weights show attention allocation across token
@@ -1245,7 +1248,7 @@ export function CoreInformation({ close }: { close: () => void }) {
       <p className="revision">
         GPT-2 · 607a30d783dfa663caf39e06633721c8d4cfcd7e
         <br />
-        Analysis schema 0.2.0 · fixture generator 1.1.0
+        {localFilename ? "Analysis schema 0.2.0 · local file import" : "Analysis schema 0.2.0 · fixture generator 1.1.0"}
       </p>
     </dialog>
   );

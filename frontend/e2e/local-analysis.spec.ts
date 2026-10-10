@@ -1,0 +1,35 @@
+import { test, expect } from "@playwright/test";
+import { readFileSync } from "node:fs";
+const raw = readFileSync("public/fixtures/showcase.json", "utf8");
+test("local import, four modes, failed replacement, recovery and refresh", async ({ page }) => {
+  const errors: string[] = [];
+  page.on("pageerror", (e) => errors.push(e.message));
+  const uploads: string[] = [];
+  page.on("request", (r) => { if (r.method() !== "GET") uploads.push(r.url()); });
+  await page.goto("/");
+  await expect(page.getByTestId("prediction")).toHaveCount(10);
+  await page.getByLabel("Fixture", { exact: true }).selectOption("import");
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await page.getByLabel("Local analysis JSON").setInputFiles({ name: "bad.json", mimeType: "application/json", buffer: Buffer.from("{") });
+  await expect(page.getByRole("alert")).toContainText("無法解析 JSON");
+  await page.getByLabel("Local analysis JSON").setInputFiles({ name: "my-analysis.json", mimeType: "application/json", buffer: Buffer.from(raw) });
+  await expect(page.getByRole("dialog").getByRole("status")).toContainText("已載入 my-analysis.json");
+  await page.getByRole("button", { name: "開始觀察" }).click();
+  await expect(page.getByText("SOURCE NOT VERIFIED", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Token 2: sat", exact: true }).click();
+  for (const mode of ["SIMILARITY", "SPACE", "COMPARE"])
+    await page.getByRole("button", { name: mode, exact: true }).click();
+  await expect(page.getByText("101.120283", { exact: true }).first()).toBeVisible();
+  await page.getByLabel("Fixture", { exact: true }).selectOption("import");
+  await page.getByLabel("Local analysis JSON").setInputFiles({ name: "bad.json", mimeType: "application/json", buffer: Buffer.from("{") });
+  await expect(page.getByRole("alert")).toBeVisible();
+  await page.getByRole("button", { name: "Close local analysis" }).click();
+  await expect(page.getByText("101.120283", { exact: true }).first()).toBeVisible();
+  await page.getByLabel("Fixture", { exact: true }).selectOption("showcase");
+  await expect(page.getByText("SHOWCASE FIXTURE", { exact: true })).toBeVisible();
+  await page.reload();
+  await expect(page.getByTestId("prediction")).toHaveCount(10);
+  await expect(page.getByLabel("Fixture", { exact: true })).toHaveValue("showcase");
+  expect(uploads).toEqual([]);
+  expect(errors).toEqual([]);
+});

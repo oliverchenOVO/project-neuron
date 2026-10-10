@@ -10,7 +10,7 @@
 |---|---|---|---|
 | 閱讀作品 | 瀏覽器 | GitHub 截圖、架構圖與文件 | 否 |
 | 操作四種模式 | Node.js、npm | 倉庫內已提交的固定公開 JSON | 否 |
-| 分析自己的輸入 | Python 3.12、依賴、官方 GPT-2 checkpoint | 本機輸入的真實模型輸出 | 是，使用 CLI |
+| 分析自己的輸入 | Python 3.12、依賴、官方 GPT-2 checkpoint | 本機輸入的真實模型輸出，可匯入瀏覽器 | 是，使用 CLI |
 | 重現完整測試 | Node.js、Python、官方 checkpoint、Playwright Chromium | 固定測試資料與真實模型 | Python 測試會推論 |
 
 Vite 的 Node 需求為 `^20.19.0 || >=22.12.0`；CI 使用 Node 22。為了貼近既有驗證，使用 Node 22.12 以上的 22.x 與 Python 3.12。GitHub 提供原始碼與固定展示資料，目前沒有 `.exe` 或安裝檔。
@@ -53,7 +53,7 @@ CLI 預設分析 `The cat sat on the mat`，列出 tokens、IDs、tensor shapes 
 .\.venv\Scripts\python.exe -m engine.cli "The cat sat on the mat" --model-dir resources/models/gpt2 --offline --output artifacts/my-analysis.json
 ```
 
-這是模型當場計算的結果，不會自動替換瀏覽器的公開 fixtures。輸出包含輸入文字與衍生訊號，屬於本機資料；`artifacts/` 由 Git 忽略，請勿把私人輸入產生的檔案改放到公開資料夾。
+這是模型當場計算的結果，不會自動替換瀏覽器的公開 fixtures。要在畫面觀察，於右上資料選單選擇「載入 JSON…」，選取 `artifacts/my-analysis.json`；載入後可使用四種模式。新 CLI 輸出包含 `input_text`，保留中文／emoji 的完整原始輸入。輸出包含輸入文字與衍生訊號，屬於本機資料；`artifacts/` 由 Git 忽略，請勿把私人輸入產生的檔案改放到公開資料夾。
 
 ## C. 驗證與重現公開 fixtures
 
@@ -102,7 +102,9 @@ npm run benchmark:core
 
 ## 常見問題
 
-**可以在畫面上直接輸入新句子嗎？** 目前不行。瀏覽器使用兩份固定公開資料；自己的輸入走 CLI。即時 worker 整合屬於後續階段。
+**可以在畫面上直接輸入新句子嗎？** 目前不行。自己的輸入先走 CLI，再把 JSON 匯入瀏覽器；也可使用兩份固定公開資料。即時 worker 整合屬於後續階段。
+
+**載入失敗會清掉原分析嗎？** 不會。修正 JSON 或重新輸出後，可以再次選檔；同一檔名也能重選。支持 schema 0.2.0、固定 revision、最多 64 tokens／32 MiB。本機檔案顯示 SOURCE NOT VERIFIED；格式檢查不代表驗證了模型權重與推論來源。切回公開資料或重新整理會清除匯入結果。
 
 **為什麼 SPACE 的很多 token 擠在一起？** 共同 PCA 使用 raw residual vectors，沒有為排版而重新分布資料。高範數向量可能主導投影；使用 selector／數值列表檢視重疊點。
 

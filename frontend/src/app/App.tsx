@@ -5,18 +5,21 @@ import { Ready, Information } from "./LegacyViews";
 import { CoreReady, CoreInformation } from "./CoreViews";
 import { isCoreAnalysis } from "../types/analysis";
 import { fixtureSource, legacyFixtureSource } from "../data/source";
+import { LocalAnalysisDialog } from "./LocalAnalysisDialog";
 export function App() {
-  const { analysis, status, error, fixtureId, load, retry } = useMicroscope(
+  const { analysis, status, error, fixtureId, localFilename, load, retry } = useMicroscope(
     useShallow((s) => ({
       analysis: s.analysis,
       status: s.status,
       error: s.error,
       fixtureId: s.fixtureId,
+      localFilename: s.localFilename,
       load: s.load,
       retry: s.retry,
     })),
   );
   const [info, setInfo] = useState(false);
+  const [localDialog, setLocalDialog] = useState(false);
   const legacy = new URLSearchParams(location.search).get("legacy") === "1";
   useEffect(() => {
     void load(
@@ -62,20 +65,24 @@ export function App() {
         <div className="header-right">
           <span className="fixture-badge">
             <i />
-            SHOWCASE FIXTURE
+            {localFilename ? "LOCAL ANALYSIS" : "SHOWCASE FIXTURE"}
           </span>
-          <span className="forward-label">REAL FORWARD PASS</span>
+          <span className="forward-label">{localFilename ? "SOURCE NOT VERIFIED" : "REAL FORWARD PASS"}</span>
           <label className="fixture-choice">
             <span className="sr-only">Fixture</span>
             <select
               aria-label="Fixture"
-              value={fixtureId}
-              onChange={(e) =>
-                void load(e.target.value as "showcase" | "stress-64")
-              }
+              className={localFilename ? "local-source-choice" : undefined}
+              value={localFilename ? "local" : fixtureId}
+              onChange={(e) => {
+                if (e.target.value === "import") setLocalDialog(true);
+                else if (e.target.value !== "local") void load(e.target.value as "showcase" | "stress-64", legacy ? legacyFixtureSource : fixtureSource);
+              }}
             >
               <option value="showcase">6-token showcase</option>
               <option value="stress-64">64-token stress</option>
+              {localFilename && <option value="local">Local: {localFilename}</option>}
+              {!legacy && <option value="import">載入 JSON…</option>}
             </select>
           </label>
           <button
@@ -117,7 +124,7 @@ export function App() {
       )}
       <footer className="app-footer">
         <span>
-          GPT-2 · LOCAL CPU INFERENCE · SCHEMA {legacy ? "0.1.1" : "0.2.0"}
+          GPT-2 · {localFilename ? `IMPORTED ${analysis?.metadata.device.toUpperCase()} ANALYSIS` : "LOCAL CPU INFERENCE"} · SCHEMA {legacy ? "0.1.1" : "0.2.0"}
         </span>
         <span>ATTENTION IS A SIGNAL, NOT A COMPLETE EXPLANATION</span>
         <span>{legacy ? "PHASE 0.5" : "PHASE 1A"}</span>
@@ -128,6 +135,7 @@ export function App() {
         ) : (
           <CoreInformation close={() => setInfo(false)} />
         ))}
+      {localDialog && <LocalAnalysisDialog close={() => setLocalDialog(false)} />}
     </div>
   );
 }

@@ -94,7 +94,7 @@ function predictions(value: unknown, path: string, length = 10) {
 }
 
 /** Validate all dimensions/semantics in place. No cloning, precision loss or default values. */
-export function validateAnalysis(value: unknown): AnalysisResult {
+export function validateAnalysis(value: unknown, options: { local?: boolean } = {}): AnalysisResult {
   const version = (
     value as { metadata?: { analysis_version?: unknown } } | null
   )?.metadata?.analysis_version;
@@ -179,7 +179,7 @@ export function validateAnalysis(value: unknown): AnalysisResult {
   ]);
   equal(
     f.notice,
-    "GENERATED FROM REAL GPT-2 OUTPUT — NOT MOCK DATA",
+    options.local ? "LOCAL ANALYSIS · FILE SOURCE NOT VERIFIED" : "GENERATED FROM REAL GPT-2 OUTPUT — NOT MOCK DATA",
     "fixture notice",
   );
   equal(f.model_revision, REVISION, "fixture revision");

@@ -4,7 +4,7 @@
 
 本專案以本機 GPT-2 的真實前向推論為資料來源，觀察 token 在不同層的注意力、向量相似度與表徵變化。它是一套模型分析工具，而非聊天介面：畫面上的矩陣、座標與數值，都能追溯至模型輸出與明確的計算方法。
 
-目前完成 **Phase 1A：瀏覽器版 Microscope Core**。Python 引擎可以執行本機推論；瀏覽器展示事先由引擎計算的公開測試資料，尚未接入即時輸入或桌面封裝。
+目前完成 **Phase 1A：瀏覽器版 Microscope Core**。Python 引擎可以執行本機推論；瀏覽器可以展示公開測試資料，也可載入本機 CLI 的分析 JSON；尚未接入即時輸入或桌面封裝。
 
 [![模型與引擎驗證](https://github.com/oliverchenOVO/project-neuron/actions/workflows/phase0.yml/badge.svg)](https://github.com/oliverchenOVO/project-neuron/actions/workflows/phase0.yml)
 [![瀏覽器驗證](https://github.com/oliverchenOVO/project-neuron/actions/workflows/phase0-5.yml/badge.svg)](https://github.com/oliverchenOVO/project-neuron/actions/workflows/phase0-5.yml)
@@ -162,6 +162,12 @@ npm run preview
 ```
 
 開啟 [http://127.0.0.1:4173](http://127.0.0.1:4173)。選取 `sat` → SIMILARITY → L01／L06／L12 → SPACE → TRAIL ON → COMPARE，即可重現展示流程。右上選單可切換 64-token 場景；`/?legacy=1` 保留初代注意力介面供回歸比較。
+
+### 載入自己的分析結果
+
+右上資料選單選擇 **載入 JSON…**，選取 `engine.cli` 輸出的 `artifacts/my-analysis.json`。檔案在瀏覽器記憶體讀取，不會上傳或持久儲存；成功後四種模式都使用該檔案的數值。切回公開展示或重新整理，即可離開本機分析。
+
+匯入會檢查 schema 0.2.0、固定 GPT-2 revision、1–64 tokens、矩陣尺寸、因果遮罩與數值一致性，檔案上限 32 MiB。錯誤不會覆蓋上一份分析。本機檔案標為 **SOURCE NOT VERIFIED**：格式驗證不等於來源或推論真實性的獨立驗證。
 
 ### 執行真實本機模型分析
 
