@@ -4,24 +4,24 @@
 
 本專案以本機 GPT-2 的真實前向推論為資料來源，觀察 token 在不同層的注意力、向量相似度與表徵變化。它是一套模型分析工具，而非聊天介面：畫面上的矩陣、座標與數值，都能追溯至模型輸出與明確的計算方法。
 
-目前完成 **Phase 1A：瀏覽器版 Microscope Core**。Python 引擎可以執行本機推論；瀏覽器可以展示公開測試資料，也可載入本機 CLI 的分析 JSON；尚未接入即時輸入或桌面封裝。
+目前完成 **Phase 1B：Layer Journey 與 Cinematic Showcase**。Python 引擎執行真實本機推論，瀏覽器提供五種觀察模式、逐層播放與影片展示流程，也可載入本機 CLI 的分析 JSON。即時輸入和桌面封裝屬於下一階段。
 
 [![模型與引擎驗證](https://github.com/oliverchenOVO/project-neuron/actions/workflows/phase0.yml/badge.svg)](https://github.com/oliverchenOVO/project-neuron/actions/workflows/phase0.yml)
 [![瀏覽器驗證](https://github.com/oliverchenOVO/project-neuron/actions/workflows/phase0-5.yml/badge.svg)](https://github.com/oliverchenOVO/project-neuron/actions/workflows/phase0-5.yml)
 
 [三分鐘導覽](#三分鐘審閱導覽) · [功能展示](#功能展示) · [系統架構](#系統架構) · [方法與研究切入點](#方法與研究切入點) · [實驗與驗證](#實驗與驗證) · [本機執行](#本機執行) · [開發歷程](#開發歷程)
 
-![神經網路顯微鏡：sat 在第六層的共享 PCA 座標與跨層軌跡](docs/screenshots/phase1a-trail-hero.png)
+![Layer Journey：sat 的 L06 表徵、已走過的軌跡與下一個 token 診斷演化](docs/screenshots/phase1b-journey-hero.png)
 
-> 真實程式截圖，1920 × 1080。輸入為 `The cat sat on the mat`，選取 `sat`、SPACE 模式、第 06 層，並開啟 TRAIL。軌跡連接同一個 token 從 EMB 到 L12 的投影位置。
+> 真實程式截圖，1920 × 1080。輸入 `The cat sat on the mat`，選取 `sat`、JOURNEY／L06、Cinematic 開啟。軌跡只顯示 EMB → L06；下方曲線是**最後輸入位置 mat** 的下一個 token 診斷演化，與選取的 sat 表徵分開解讀。
 
 ## 三分鐘審閱導覽
 
 | 時間 | 觀察重點 | 可直接查看的證據 |
 |---|---|---|
-| 第 1 分鐘 | 先看 SPACE 主圖，再比較 Attention 與 Similarity；理解三者分析的是不同訊號 | [功能展示](#功能展示)、[架構圖](#系統架構) |
+| 第 1 分鐘 | 先看 JOURNEY 主圖與候選曲線，再比較 Attention／Similarity；辨別各種訊號 | [功能展示](#功能展示)、[架構圖](#系統架構) |
 | 第 2 分鐘 | 以同一 token 的 L03 → L09 為例，區分向量範數差、高維距離與二維位移 | [中文分析案例](docs/REVIEWER_GUIDE.zh-TW.md#sat-layer-comparison) |
-| 第 3 分鐘 | 核對資料來源、測試、效能定義與原始提交，而不只看介面截圖 | [驗證報告](docs/PHASE1A_VALIDATION.md)、[完整歷史](https://github.com/oliverchenOVO/project-neuron/commits/main/) |
+| 第 3 分鐘 | 核對資料來源、測試、效能定義與原始提交，而不只看介面截圖 | [Phase 1B 驗證報告](docs/PHASE1B_VALIDATION.md)、[完整歷史](https://github.com/oliverchenOVO/project-neuron/commits/main/) |
 
 不必安裝即可閱讀上述圖文；要操作介面可使用已提交的公開資料，不必先下載模型。[審閱指南](docs/REVIEWER_GUIDE.zh-TW.md)整理技術問題與證據的對應，[重現指南](docs/REPRODUCIBILITY.zh-TW.md)則分開說明兩種執行路徑。
 
@@ -59,7 +59,7 @@ Heatmap 顯示完整 query–key 矩陣；選取 token 後，Arc View 顯示該 
 
 將 EMB 與 L01–L12 的表徵合併，**只擬合一次 PCA**，所有層共用同一個全域平均與投影 basis。切換 layer 時，座標軸範圍固定，token 依真正的投影結果移動；支援手動 scrubber、240 ms 線性過渡，以及減少動態效果偏好。
 
-開啟 TRAIL 可觀察單一 token 的 13 個真實投影位置。圖上標示 PC1／PC2 的解釋變異比例，並提供完整數值列表。首頁主圖即為此模式；[不含軌跡的 SPACE 截圖](docs/screenshots/phase1a-shared-space.png)可用來比較所有 token 的分布。
+開啟 TRAIL 可觀察單一 token 的 13 個真實投影位置。圖上標示 PC1／PC2 的解釋變異比例，並提供完整數值列表。[SPACE 軌跡截圖](docs/screenshots/phase1a-trail-hero.png)保留 Phase 1A 的完整路徑；[不含軌跡的 SPACE 截圖](docs/screenshots/phase1a-shared-space.png)可比較所有 token 的分布。
 
 ### 4. COMPARE｜比較同一 token 在兩層的表徵
 
@@ -76,6 +76,30 @@ FROM／TO 可以選 EMB–L12，並列出兩層 magnitude、magnitude 差值、*
 ![64-token 的共享 PCA 與 token 63 跨層軌跡](docs/screenshots/phase1a-space64.png)
 
 另驗證 [1440 × 900](docs/screenshots/phase1a-desktop-1440.png) 與 [1280 × 720](docs/screenshots/phase1a-desktop-1280.png)。小尺寸畫面的 inspector 使用內部捲動；主要操作與最終預測保留在視窗內。
+
+### 5. JOURNEY｜將逐層觀察變成可操作的研究儀器
+
+選取 token 後進入 JOURNEY，依序查看 **EMB → L01–L12 → OUT**。時間軸可直接點選；Previous／Next、Play／Pause、Reset 與方向鍵、Space、Home／End 都可操作。預設每階段 900 ms，提供 0.5×／1×／1.5×／2×；播放只切換記憶體中的階段，不重新讀檔或推論。
+
+主圖使用同一個 PCA basis 與固定座標軸。預設軌跡只展開到目前層，需勾選 SHOW FULL TRAIL 才看見後續座標。右侧顯示原始 768 維表徵的範數、相鄰差異、跨層 cosine，以及 Top 3 注意力目標與相似 token；相似度排名保留正負號並排除自身。64-token 圖保留全部點，僅顯示選取、hover 與稀疏標籤。
+
+EMB 沒有注意力，CHANGE／前一層 cosine 為 N/A。OUT 代表輸出投影，**沒有第 13 個 Transformer block**；表徵沿用 L12，注意力顯示完成於 L12／N/A。
+
+### 6. Logit Lens／Prediction Evolution｜比較診斷投影與真正輸出
+
+![固定五個候選在 EMB、十二個 blocks 與 OUT 的診斷曲線，以及精確數值表](docs/screenshots/phase1b-prediction-hero.png)
+
+引擎固定追蹤**最終 top-5 的 token IDs**，對 13 個 raw residual 的最後輸入位置套用 `ln_f → LM head → full-vocabulary softmax`，另外保留 OUT 的真正 forward logits。曲線不從各層 top-10 的缺漏猜值，也不把 top-k 機率重新正規化。
+
+EMB–L12 標為 **LOGIT LENS ESTIMATE**，OUT 標為 **FINAL PREDICTION**。可以切換 LOGIT LENS PROBABILITY／LOGIT SCORE、勾選候選，從 hover 與文字表讀取原始精確數值。這是 diagnostic evolution：中間值是最終正規化與輸出 head 的診斷投影，不能當作模型在中間層作出的實際決策。
+
+### 7. Cinematic／Showcase｜直接用於展示與錄影
+
+右上 CINEMATIC 收起資料選單、次要操作與 token strip，保留 token、階段、模型資訊、時間軸、預測圖及資料來源。公開資料持續標示 SHOWCASE FIXTURE／REAL FORWARD PASS；匯入檔持續標示 LOCAL ANALYSIS／SOURCE NOT VERIFIED。
+
+PLAY SHOWCASE 依序展示 Attention L01 → L06 → L12 → Similarity → Space → Journey EMB–L12 → OUT。公開短句固定選 sat；64-token 或自訂資料使用目前選取的 token，沒有選取時需先選擇。Escape 可停止並退出 Cinematic；切換模式或隱藏分頁也會停止播放。
+
+`/?recording=1` 固定為 1080p 友善的 L06 Cinematic 主圖，不含時間戳或機器路徑；`/?recording=1&intro=1` 從未選取 token 的儀器畫面開始。[正式 60 秒錄製流程](docs/PHASE1B_RECORDING.zh-TW.md)與可執行 Playwright 腳本涵蓋 tokenization、逐層觀察、Journey 播放與 final output，不插入虛構資料或標題卡。
 
 ## 系統架構
 
@@ -119,6 +143,10 @@ Transformers 回傳的最後 hidden state 已經經過 `ln_f`。引擎透過暫�
 介面切換保留同一份 analysis 物件，避免反覆複製大型 JSON。資料載入、JSON parse、schema 驗證、狀態更新、render 與互動成本分開量測，讓效能報告能指出成本來自哪個階段。
 
 ## 實驗與驗證
+
+**Phase 1B PASS**：55 項 Python、82 項前端測試、23 個 E2E 場景與 production build 通過，Windows Engine／Browser CI 成功。包含原有全部回歸場景、真實 CLI 匯入、Unicode、64-token、reduced motion 與新版視覺基準。四組 6／64 tokens × public／CLI import 的互動 JS p95 最高 **5.9 ms**（i9-12900H／Windows／Chromium 153），低於 50 ms 目標。
+
+新增 public payload 僅約 3.4 KB／份，沒有 full-vocabulary 矩陣；64-token fixture 共 9,046,328 bytes。方法、全部 A–AB 門檻、JS heap 近似值、CI 與限制詳見 [Phase 1B 驗證](docs/PHASE1B_VALIDATION.md)、[完整效能證據](docs/evidence/phase1b-browser-performance.json)。正式錄影腳本已實際執行並匯出 60 秒 1080p MP4；影片屬於本機 artifact，不放進 Git。
 
 以下為已完成 Phase 1A 的紀錄，詳細原始樣本與硬體條件見 [驗證報告](docs/PHASE1A_VALIDATION.md)，目前 CI 狀態可從頁首徽章與 [Actions 歷史](https://github.com/oliverchenOVO/project-neuron/actions)查看。
 
@@ -165,9 +193,9 @@ npm run preview
 
 ### 載入自己的分析結果
 
-右上資料選單選擇 **載入 JSON…**，選取 `engine.cli` 輸出的 `artifacts/my-analysis.json`。檔案在瀏覽器記憶體讀取，不會上傳或持久儲存；成功後四種模式都使用該檔案的數值。切回公開展示或重新整理，即可離開本機分析。
+右上資料選單選擇 **載入 JSON…**，選取 `engine.cli` 輸出的 `artifacts/my-analysis.json`。檔案在瀏覽器記憶體讀取，不會上傳或持久儲存；schema 0.3.0 的五種模式都使用該檔案的數值。切回公開展示或重新整理，即可離開本機分析。
 
-匯入會檢查 schema 0.2.0、固定 GPT-2 revision、1–64 tokens、矩陣尺寸、因果遮罩與數值一致性，檔案上限 32 MiB。錯誤不會覆蓋上一份分析。本機檔案標為 **SOURCE NOT VERIFIED**：格式驗證不等於來源或推論真實性的獨立驗證。
+匯入會檢查 schema 0.3.0、固定 GPT-2 revision、1–64 tokens、矩陣尺寸、因果遮罩、14 個候選階段及數值一致性，檔案上限 32 MiB。**舊 0.2.0 仍可操作四種原有模式**，會明確提示重新執行 CLI 才能使用 Journey；不補造缺失數值。錯誤保留上一份分析與 Journey 狀態。本機檔案標為 **SOURCE NOT VERIFIED**：格式驗證不等於來源或推論真實性的獨立驗證。
 
 ### 執行真實本機模型分析
 
@@ -200,6 +228,10 @@ npm run test:e2e
 
 # 另開終端執行 npm run preview 後，再量測瀏覽器
 npm run benchmark:core
+
+# Phase 1B 效能與正式錄影；URL 可由 NEURON_URL 指向 preview
+node scripts/benchmark-phase1b.mjs
+node scripts/record-phase1b.mjs
 ```
 
 普通 E2E 不更新截圖基準。Windows 基準與 Chromium／字型環境有關；不同作業系統的像素結果可能不同。模型下載較慢時，可先使用 `scripts.download_checkpoint` 的驗證分段下載流程，詳見程式內說明。
@@ -210,7 +242,7 @@ npm run benchmark:core
 - **Magnitude** 是 L2 norm，不等於 token 的重要性；**Change** 是相鄰層的 L2 distance。
 - **PCA／TRAIL** 是高維表徵的二維投影，不是因果推理路徑。PC1／PC2 沒有被指定語意；原始向量範數與離群點可能主導投影。
 - **Final Prediction** 使用完整詞彙的 softmax，再選 top-10；圖上十個機率不會重新正規化為總和 1。
-- **Logit Lens** 現階段僅保留最後輸入位置的診斷資料，尚無視覺化介面。
+- **Logit Lens** 在 JOURNEY 顯示最後輸入位置的診斷投影；它與 selected token 的表徵、注意力及相似度有不同的位置語意。機率分母涵蓋全部 50,257 詞彙，只有 OUT 是真正的最終輸出。
 
 推論在本機進行，不將 prompt 傳送至託管推論服務，沒有帳號、遙測或雲端資料庫。模型下載會連線至 Hugging Face。使用者輸入及其衍生 CLI 輸出屬於本機資料；`artifacts/`、模型權重與環境檔均由 Git 忽略。倉庫公開的是固定公開句子的展示資料。
 
@@ -223,16 +255,16 @@ npm run benchmark:core
 | Phase 0 | 真實 GPT-2 引擎、CLI、RPC scaffold、模型／數值驗證 | [引擎提交](https://github.com/oliverchenOVO/project-neuron/commit/4b8fbda)、[驗證報告](docs/PHASE0_VALIDATION.md) |
 | Phase 0.5 | 真實資料驅動的 Attention 瀏覽器介面、視覺回歸與效能證據 | [介面提交](https://github.com/oliverchenOVO/project-neuron/commit/0052eb4)、[驗證報告](docs/PHASE0_5_VALIDATION.md) |
 | Phase 1A | signed similarity、shared PCA、TRAIL、COMPARE、profiles | [共享表徵提交](https://github.com/oliverchenOVO/project-neuron/commit/07a8fc4)、[介面提交](https://github.com/oliverchenOVO/project-neuron/commit/40f84dc)、[驗證報告](docs/PHASE1A_VALIDATION.md) |
+| Phase 1B | Layer Journey、固定候選 Logit Lens、Cinematic／Showcase／錄影 preset | [引擎提交](https://github.com/oliverchenOVO/project-neuron/commit/d303cfd)、[Journey 提交](https://github.com/oliverchenOVO/project-neuron/commit/8395541)、[Cinematic 提交](https://github.com/oliverchenOVO/project-neuron/commit/ca86f9b)、[驗證報告](docs/PHASE1B_VALIDATION.md) |
 
 [完整 commits](https://github.com/oliverchenOVO/project-neuron/commits/main/) · [GitHub Actions 紀錄](https://github.com/oliverchenOVO/project-neuron/actions) · [Releases](https://github.com/oliverchenOVO/project-neuron/releases)
 
-早期驗證報告中的 PRIVATE 是當時倉庫狀態的紀錄；後續公開不改寫歷史證據。截至此 README 整理時，main 可驗證的實作為 Phase 1A；尚無 Windows 發行版本。
+早期驗證報告中的 PRIVATE 是當時倉庫狀態的紀錄；後續公開不改寫歷史證據。Phase 1B 延續同一個公開倉庫，尚無 Windows 發行版本。
 
 ## 後續方向
 
-1. **Phase 1B：Layer Journey／展示流程**——在現有數值定義下加入逐層觀察與展示編排。
-2. **Phase 1C：桌面與 worker 整合**——連接 Electron 與本機 Python worker，補齊狀態、錯誤與復原流程。
-3. **Phase 1D：Windows 封裝與驗證**——處理安裝版／portable、模型資源、完全離線與 crash recovery。
+1. **Phase 1C — Electron + live local Python worker integration**：連接即時 prompt 輸入與本機 worker，補齊狀態、錯誤與復原流程。
+2. **Phase 1D：Windows 封裝與驗證**：處理安裝版／portable、模型資源、完全離線與 crash recovery。
 
 這些是後續規劃，尚未列為已完成成果。完整桌面 Phase 1 的驗收狀態見 [驗收帳本](docs/PHASE1_VALIDATION.md)。
 

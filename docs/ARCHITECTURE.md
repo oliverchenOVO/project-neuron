@@ -75,6 +75,34 @@ model id, revision, local directory, device, full prompt, analysis version and k
 Cached results are copied before delivery to prevent client-side mutations from
 corrupting later requests. Raw tensors are not retained in the result cache.
 
+## Phase 1B analysis contract and browser playback
+
+The current engine exports schema **0.3.0**. `prediction_evolution` stores the last
+input position, 14 ordered stage names (EMB, L01–L12, OUT), normalization and
+projection descriptors, and five final-top-ranked candidate IDs/texts. Each
+candidate has 14 genuine logits and probabilities. Intermediate values apply
+`ln_f` and `lm_head` to the raw residual at the last position; probabilities use
+float64 softmax over all 50,257 vocabulary entries. OUT is the genuine forward
+logit vector. Full vocabulary arrays are never exported to the browser.
+
+The existing 13 × top-10 diagnostic rankings remain available. Runtime validation
+checks candidate identity/order, exact stage count, finite values, last position,
+OUT equality, agreement with visible intermediate top-10 entries and common
+softmax denominator. These format/invariant checks cannot establish authenticity
+of user-imported data; imported provenance remains SOURCE NOT VERIFIED.
+
+JOURNEY consumes the same analysis object as all other modes, with shared global
+PCA axes and original 768D metrics. EMB attention/delta/previous cosine are N/A;
+OUT reuses L12 representation, with attention N/A and output semantics explicit.
+Playback changes UI state every 900 / speed ms, never fetching or parsing data.
+Hidden tabs stop playback; effects clean up timers. Cinematic changes presentation
+only. Reduced motion disables interpolation without disabling playback.
+
+Default public fixtures live under `frontend/public/fixtures/phase1b`. Archived
+0.2.0 fixtures stay unchanged and are exercised at `?core=1`; 0.1.1 regressions
+use `?legacy=1`. Imported 0.2.0 files retain four modes and show a regeneration
+notice. Missing 0.3.0 candidate data is rejected, not approximated.
+
 ## Planned desktop boundary (not implemented)
 
 `Electron renderer → context-isolated preload IPC → Electron main supervisor →

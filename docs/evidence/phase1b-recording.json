@@ -1,0 +1,117 @@
+{
+  "viewport": "1920x1080",
+  "data": "public pinned real GPT-2 fixture",
+  "video": "artifacts/phase1b-recording/page@573f181b4f08b8882b1fb17153d9499e.webm",
+  "timeline": [
+    {
+      "plannedSecond": 0,
+      "actualSecond": 0.0001611000000000331,
+      "label": "PROJECT NEURON / full instrument"
+    },
+    {
+      "plannedSecond": 3,
+      "actualSecond": 3.0452979,
+      "label": "The cat sat on the mat"
+    },
+    {
+      "plannedSecond": 5,
+      "actualSecond": 5.0126667,
+      "label": "Tokenization"
+    },
+    {
+      "plannedSecond": 8,
+      "actualSecond": 8.0949712,
+      "label": "Select sat"
+    },
+    {
+      "plannedSecond": 10,
+      "actualSecond": 10.0410723,
+      "label": "Attention arcs"
+    },
+    {
+      "plannedSecond": 14,
+      "actualSecond": 14.0324164,
+      "label": "Layer 01"
+    },
+    {
+      "plannedSecond": 16,
+      "actualSecond": 16.0377006,
+      "label": "Layer 06"
+    },
+    {
+      "plannedSecond": 18,
+      "actualSecond": 18.0427133,
+      "label": "Layer 12"
+    },
+    {
+      "plannedSecond": 20,
+      "actualSecond": 20.0600559,
+      "label": "Similarity"
+    },
+    {
+      "plannedSecond": 24,
+      "actualSecond": 24.0469469,
+      "label": "Shared PCA Space"
+    },
+    {
+      "plannedSecond": 28,
+      "actualSecond": 28.047460299999997,
+      "label": "Representation trail"
+    },
+    {
+      "plannedSecond": 33,
+      "actualSecond": 33.2314234,
+      "label": "Journey EMB / cinematic"
+    },
+    {
+      "plannedSecond": 36,
+      "actualSecond": 36.0669021,
+      "label": "Play EMB to L12"
+    },
+    {
+      "plannedSecond": 46,
+      "actualSecond": 46.0861392,
+      "label": "Prediction Evolution"
+    },
+    {
+      "plannedSecond": 52,
+      "actualSecond": 52.064651299999994,
+      "label": "OUT / final prediction"
+    },
+    {
+      "plannedSecond": 57,
+      "actualSecond": 57.053468699999996,
+      "label": "Full instrument"
+    },
+    {
+      "plannedSecond": 60,
+      "actualSecond": 60.142295399999995,
+      "label": "PROJECT NEURON / real Transformer signals"
+    }
+  ],
+  "errors": [],
+  "note": "60s instrument sequence begins after loading; WebM also contains setup footage. No composited title cards or fake data.",
+  "export": {
+    "file": "artifacts/phase1b-recording/project-neuron-60s.mp4",
+    "trimStartSeconds": 1,
+    "durationSeconds": 60,
+    "speedChange": false,
+    "sha256": "8446ff81aa2bc6bf3758ff515049f080a92ed23b6922da8d326f3f78d383d6f4",
+    "ffprobe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "width": 1920,
+          "height": 1080,
+          "avg_frame_rate": "25/1"
+        }
+      ],
+      "format": {
+        "duration": "60.000000",
+        "size": "3642851"
+      }
+    }
+  }
+}

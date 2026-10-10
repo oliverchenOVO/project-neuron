@@ -1,6 +1,6 @@
 # PHASE 1 STATUS — PHASE 1 INCOMPLETE
 
-Status recorded 2026-10-04 (Asia/Taipei). Phase 0 and browser milestones 0.5/1A passed. The complete
+Status updated 2026-10-11 (Asia/Taipei). Phase 0 and browser milestones 0.5/1A passed. Phase 1B adds Journey and showcase; see its separate evidence report. The complete
 desktop application is not yet implemented, packaged or accepted.
 
 ## IMPLEMENTED
@@ -11,6 +11,9 @@ frontend tests, Playwright screenshots and production performance evidence.
 Phase 1A adds genuine signed similarity, shared-basis SPACE/TRAIL, cross-layer
 COMPARE and profiles. It does not complete the desktop application. See
 [Phase 1A evidence](PHASE1A_VALIDATION.md) and PHASE0_5_VALIDATION.md.
+Phase 1B adds Layer Journey, last-position Logit Lens / fixed-candidate evolution,
+Cinematic presentation, guided showcase and deterministic recording. See
+[Phase 1B evidence](PHASE1B_VALIDATION.md). The live desktop boundary remains absent.
 
 Python engine modules, real GPT-2 spike, CLI analysis JSON, derived metrics,
 last-position Logit Lens, bounded input/cache, JSON-line RPC scaffold, pinned
@@ -24,7 +27,7 @@ softmax validated. See [Phase 0 evidence](PHASE0_VALIDATION.md).
 
 ## TESTS / PERFORMANCE
 
-50 local Python tests, 57 frontend tests and 11 browser E2E tests pass, with
+55 local Python tests, 82 frontend tests and 23 browser E2E scenes cover the current implementation, with
 real-model tests required and old visual baselines preserved. Production build
 and Engine/Browser CI are separately verified in PHASE1A_VALIDATION.md. Engine
 forward/derived/serialization and browser fetch/parse/validation/render/interaction
@@ -61,9 +64,9 @@ work exists but the complete Phase 1 requirement remains unverified.
 | H | Hidden-state similarity view | PARTIAL — signed browser matrix/ranking/graph pass; live desktop absent |
 | I | PCA representation view | PARTIAL — shared-basis browser SPACE/TRAIL/COMPARE pass; live desktop absent |
 | J | Final top-k prediction view | PARTIAL — browser genuine probability view passes; live desktop absent |
-| K | Logit Lens view | PARTIAL — diagnostics validated; UI absent |
-| L | Layer Journey | NOT IMPLEMENTED |
-| M | Cinematic Mode | NOT IMPLEMENTED |
+| K | Logit Lens view | PARTIAL — genuine browser diagnostic view implemented; live desktop absent |
+| L | Layer Journey | PARTIAL — browser playback and all stage semantics implemented; live desktop absent |
+| M | Cinematic Mode | PARTIAL — browser presentation, provenance and recording implemented; live desktop absent |
 | N | CPU mode | PARTIAL — Python CPU validated; desktop absent |
 | O | Offline mode | PARTIAL — local engine validated; packaged app absent |
 | P | Worker crash recovery | NOT IMPLEMENTED |
@@ -83,8 +86,8 @@ Current lens data is for the final input position. The original independently fi
 separate shared basis with fixed axes and non-causal trajectory labeling. Browser screenshots
 are recorded in docs/screenshots; they show precomputed real fixtures.
 
-## NEXT PHASE OPTIONS
+## NEXT REQUIRED MILESTONE
 
-After **Phase 1A microscope core**, proceed to 1B Journey/polish,
-1C Electron worker, and 1D packaging/QA. Phase 2 features stay out of scope until
+**Phase 1C — Electron + live local Python worker integration**, then
+1D packaging/QA. Phase 2 features stay out of scope until
 every Phase 1 acceptance gate passes.

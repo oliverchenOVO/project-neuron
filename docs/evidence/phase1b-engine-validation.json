@@ -1,0 +1,200 @@
+{
+  "model_metadata": {
+    "model": "openai-community/gpt2",
+    "model_revision": "607a30d783dfa663caf39e06633721c8d4cfcd7e",
+    "analysis_version": "0.3.0",
+    "device": "cpu",
+    "parameter_count": 124439808,
+    "attention_implementation": "eager",
+    "max_tokens": 64,
+    "sequence_length": 64,
+    "representation_basis": "embedding + raw post-block residual streams (before ln_f)",
+    "layer_labels": [
+      "EMB",
+      "L1",
+      "L2",
+      "L3",
+      "L4",
+      "L5",
+      "L6",
+      "L7",
+      "L8",
+      "L9",
+      "L10",
+      "L11",
+      "L12"
+    ],
+    "attention_axes": [
+      "layer",
+      "head",
+      "query",
+      "key"
+    ],
+    "pca_basis": "independent centered PCA per layer; axes are not aligned across layers",
+    "logit_lens_position": 63,
+    "local_inference": true,
+    "local_only_loading": true,
+    "torch_version": "2.14.1+cpu",
+    "transformers_version": "4.57.6",
+    "cache_hit": false,
+    "forward_ms": 316.4857999945525,
+    "new_metrics_ms": 133.9155999958166,
+    "prediction_evolution_ms": 186.0039000021061,
+    "analysis_ms": 881.3888999939081,
+    "request_ms": 881.3888999939081
+  },
+  "platform": "Windows-11-10.0.26200-SP0",
+  "python": "3.12.10",
+  "cpu_threads": 4,
+  "load_ms": 473.36779999750433,
+  "benchmarks": [
+    {
+      "tokens": 6,
+      "analysis_ms": 504.5855999997002,
+      "forward_ms": 331.70629999949597,
+      "payload_bytes": 152384,
+      "cache_request_ms": 9.555500000715256,
+      "max_attention_row_sum_error": 2.384185791015625e-7,
+      "max_future_attention": 0,
+      "max_cosine_diagonal_error": 2.980232238769531e-7,
+      "max_cosine_symmetry_error": 0,
+      "final_top_k": [
+        {
+          "token_id": 11,
+          "token": ",",
+          "probability": 0.237009080353809,
+          "logit": -84.4605484008789
+        },
+        {
+          "token_id": 290,
+          "token": " and",
+          "probability": 0.14987944069246598,
+          "logit": -84.91881561279297
+        },
+        {
+          "token_id": 351,
+          "token": " with",
+          "probability": 0.07134079089469844,
+          "logit": -85.66117858886719
+        },
+        {
+          "token_id": 13,
+          "token": ".",
+          "probability": 0.06309218224724916,
+          "logit": -85.78404998779297
+        },
+        {
+          "token_id": 287,
+          "token": " in",
+          "probability": 0.058803893768860915,
+          "logit": -85.85443878173828
+        },
+        {
+          "token_id": 329,
+          "token": " for",
+          "probability": 0.04987880968052008,
+          "logit": -86.01905059814453
+        },
+        {
+          "token_id": 355,
+          "token": " as",
+          "probability": 0.033103478620056186,
+          "logit": -86.42900848388672
+        },
+        {
+          "token_id": 981,
+          "token": " while",
+          "probability": 0.0264556964277621,
+          "logit": -86.6531753540039
+        },
+        {
+          "token_id": 286,
+          "token": " of",
+          "probability": 0.019627831858614747,
+          "logit": -86.95169830322266
+        },
+        {
+          "token_id": 1306,
+          "token": " next",
+          "probability": 0.016460085998814964,
+          "logit": -87.1277084350586
+        }
+      ]
+    },
+    {
+      "tokens": 64,
+      "analysis_ms": 1387.795400005416,
+      "forward_ms": 316.4857999945525,
+      "payload_bytes": 9717894,
+      "cache_request_ms": 478.3674999998766,
+      "max_attention_row_sum_error": 4.76837158203125e-7,
+      "max_future_attention": 0,
+      "max_cosine_diagonal_error": 7.152557373046875e-7,
+      "max_cosine_symmetry_error": 0,
+      "final_top_k": [
+        {
+          "token_id": 23748,
+          "token": " hello",
+          "probability": 0.9931527906412931,
+          "logit": -108.0383529663086
+        },
+        {
+          "token_id": 198,
+          "token": "\n",
+          "probability": 0.002461422811553214,
+          "logit": -114.03849792480469
+        },
+        {
+          "token_id": 18435,
+          "token": " Hello",
+          "probability": 0.001365688573480143,
+          "logit": -114.62757873535156
+        },
+        {
+          "token_id": 31373,
+          "token": "hello",
+          "probability": 0.0009149722209124996,
+          "logit": -115.0280990600586
+        },
+        {
+          "token_id": 24829,
+          "token": " goodbye",
+          "probability": 0.000486279280192085,
+          "logit": -115.66020965576172
+        },
+        {
+          "token_id": 17207,
+          "token": " hey",
+          "probability": 0.00011805930714800248,
+          "logit": -117.0758056640625
+        },
+        {
+          "token_id": 15496,
+          "token": "Hello",
+          "probability": 0.00009092550598712824,
+          "logit": -117.33695220947266
+        },
+        {
+          "token_id": 0,
+          "token": "!",
+          "probability": 0.00004999326993645057,
+          "logit": -117.93510437011719
+        },
+        {
+          "token_id": 5145,
+          "token": " !",
+          "probability": 0.00003980644755452001,
+          "logit": -118.1629638671875
+        },
+        {
+          "token_id": 3621,
+          "token": " nice",
+          "probability": 0.00003849705067065275,
+          "logit": -118.1964111328125
+        }
+      ]
+    }
+  ],
+  "load_measurement": "fresh model object after Python imports; OS cache may be warm; not complete app startup",
+  "scope": "Phase 0 only. Electron, UI and installer gates not tested."
+}
